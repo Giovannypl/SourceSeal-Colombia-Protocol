@@ -1,16 +1,204 @@
+
 import type { Express } from "express";
-import { createServer, type Server } from "http";
+import type { Server } from "http";
 import { storage } from "./storage";
+import { api, errorSchemas } from "@shared/routes";
+import { z } from "zod";
+import crypto from "crypto";
+
+// --- LOGIC FROM PYTHON SOURCE ---
+
+// Constants
+const UMBRALES_DANO = {
+  nivel1: 3,      // Reduced for demo (Original: 100)
+  nivel2: 5000,   // USD
+  nivel3: 10000   // USD
+};
+
+const LEY_1978 = {
+  art6: "Protección datos personales",
+  art10: "Responsabilidad proveedor",
+  art13: "Consentimiento expreso",
+  art20: "Sanciones por infracciones TIC"
+};
+
+// ZKP Simulation
+// Using a simple modular exponentiation for demo: g^secret mod p
+const ZKP_P = 509n; // Prime from python code (sympy.prime(97) is approx 509)
+const ZKP_G = 5n;
+
+function generarZKP(secret: number): string {
+  // commitment = (g ^ secret) % p
+  const secretBI = BigInt(secret);
+  // BigInt exponentiation
+  const commitment = (ZKP_G ** secretBI) % ZKP_P;
+  return commitment.toString();
+}
+
+function hashMetadata(metadata: object): string {
+  return crypto.createHash('sha256').update(JSON.stringify(metadata)).digest('hex');
+}
+
+// Enforcement Logic
+async function evaluateDamage(sealId: number, financialUsd: number = 0) {
+  const reportCount = await storage.getReportCount(sealId);
+  const currentEnforcements = await storage.getLatestEnforcement(sealId);
+  const currentLevel = currentEnforcements?.level || 0;
+
+  let newLevel = 0;
+  let action = "";
+  let authority = "";
+
+  // Check Level 2 & 3 (Financial)
+  if (financialUsd >= UMBRALES_DANO.nivel3) {
+    newLevel = 3;
+    action = "Sanción económica + bloqueo de cuentas";
+    authority = "Fiscalía General";
+  } else if (financialUsd >= UMBRALES_DANO.nivel2) {
+    newLevel = 2;
+    action = "Investigación fiscalía + solicitud datos judicial";
+    authority = "Fiscalía Seccional";
+  }
+  
+  // Check Level 1 (Reports) - Only if not already at higher level by finance
+  if (newLevel < 1 && reportCount >= UMBRALES_DANO.nivel1) {
+    newLevel = 1;
+    action = "Revisión por comité ético digital";
+    authority = "Comité Ético Digital";
+  }
+
+  // Only trigger if new level is higher than current
+  if (newLevel > currentLevel) {
+    return await storage.createEnforcement({
+      sealId,
+      level: newLevel,
+      action,
+      authority,
+      financialUsd,
+      status: "active"
+    });
+  }
+  
+  return null;
+}
+
+// --- ROUTES ---
 
 export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
-  // put application routes here
-  // prefix all routes with /api
 
-  // use storage to perform CRUD operations on the storage interface
-  // e.g. storage.insertUser(user) or storage.getUserByUsername(username)
+  // Create Seal
+  app.post(api.seals.create.path, async (req, res) => {
+    try {
+      const input = api.seals.create.input.parse(req.body);
+
+      // 1. ZKP Generation
+      const zkpCommitment = generarZKP(input.secret);
+
+      // 2. Metadata Construction
+      const timestamp = new Date().toISOString();
+      const metadata = {
+        contenido_id: input.contentId,
+        wallet: input.wallet,
+        timestamp: timestamp,
+        ley: "1978-COL",
+        articulos: ["6", "10", "13"],
+        zkp_commitment: zkpCommitment
+      };
+
+      // 3. Blockchain Seal (Hash)
+      const sealHash = hashMetadata(metadata);
+
+      // 4. Storage
+      const seal = await storage.createSeal({
+        contentId: input.contentId,
+        wallet: input.wallet,
+        consentGiven: input.consentGiven,
+        zkpCommitment,
+        sealHash,
+        metadata
+      });
+
+      res.status(201).json(seal);
+    } catch (err) {
+      if (err instanceof z.ZodError) {
+        return res.status(400).json({
+          message: err.errors[0].message,
+          field: err.errors[0].path.join('.'),
+        });
+      }
+      console.error(err);
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  });
+
+  // List Seals
+  app.get(api.seals.list.path, async (req, res) => {
+    const seals = await storage.getSeals();
+    res.json(seals);
+  });
+
+  // Get Seal Details
+  app.get(api.seals.get.path, async (req, res) => {
+    const id = Number(req.params.id);
+    const seal = await storage.getSeal(id);
+    if (!seal) return res.status(404).json({ message: "Seal not found" });
+
+    const reports = await storage.getReportsBySealId(id);
+    const enforcements = await storage.getEnforcementsBySealId(id);
+
+    res.json({ ...seal, reports, enforcements });
+  });
+
+  // Create Report
+  app.post(api.reports.create.path, async (req, res) => {
+    try {
+      const input = api.reports.create.input.parse(req.body);
+      
+      // Verify seal exists
+      const seal = await storage.getSeal(input.sealId);
+      if (!seal) return res.status(404).json({ message: "Target seal not found" });
+
+      await storage.createReport(input);
+
+      // Evaluate Logic (Trigger Enforcement?)
+      const enforcement = await evaluateDamage(input.sealId);
+
+      if (enforcement) {
+        res.status(201).json(enforcement);
+      } else {
+        res.status(201).json({ message: "Report logged. No enforcement threshold reached yet." });
+      }
+
+    } catch (err) {
+      if (err instanceof z.ZodError) {
+        return res.status(400).json({
+          message: err.errors[0].message,
+          field: err.errors[0].path.join('.'),
+        });
+      }
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  });
+
+  // Simulate Financial Event (For Demo)
+  app.post(api.enforcement.simulate.path, async (req, res) => {
+    const { sealId, financialUsd } = req.body;
+    
+    // Verify seal exists
+    const seal = await storage.getSeal(sealId);
+    if (!seal) return res.status(404).json({ message: "Seal not found" });
+
+    const enforcement = await evaluateDamage(sealId, financialUsd);
+
+    if (enforcement) {
+      res.json(enforcement);
+    } else {
+      res.json({ message: `Financial event of $${financialUsd} recorded. No new enforcement triggered.` });
+    }
+  });
 
   return httpServer;
 }
