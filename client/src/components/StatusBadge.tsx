@@ -33,7 +33,7 @@ export function StatusBadge({ level }: StatusBadgeProps) {
         : "bg-red-500/10 border-red-500/30 text-red-500 shadow-[0_0_10px_rgba(239,68,68,0.3)]"
     )}>
       <AlertTriangle className="w-3.5 h-3.5" />
-      Level {level} Enforcement
+      {level === 3 ? "LEY 1978 - BLOQUEO TOTAL" : `Level ${level} Enforcement`}
     </div>
   );
 }
