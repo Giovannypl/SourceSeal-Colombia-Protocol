@@ -1,3 +1,6 @@
+// Bóveda de Integridad SourceSeal - Ley 1978 COL
+export const MASTER_COMMITMENT = 238;
+export const MASTER_HASH = "2b829b821e23d1de4a60cd102017022792da581b5571db941d9ba281465577fc";
 
 import { drizzle } from "drizzle-orm/node-postgres";
 import pg from "pg";
