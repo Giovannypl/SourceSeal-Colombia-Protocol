@@ -23,6 +23,7 @@ export interface IStorage {
   createEnforcement(enforcement: Omit<Enforcement, "id" | "createdAt">): Promise<Enforcement>;
   getEnforcementsBySealId(sealId: number): Promise<Enforcement[]>;
   getLatestEnforcement(sealId: number): Promise<Enforcement | undefined>;
+  getSealByZkp(zkp: string): Promise<Seal | undefined>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -50,6 +51,11 @@ export class DatabaseStorage implements IStorage {
 
   async getSeal(id: number): Promise<Seal | undefined> {
     const [seal] = await db.select().from(seals).where(eq(seals.id, id));
+    return seal;
+  }
+
+  async getSealByZkp(zkp: string): Promise<Seal | undefined> {
+    const [seal] = await db.select().from(seals).where(eq(seals.zkpCommitment, zkp));
     return seal;
   }
 

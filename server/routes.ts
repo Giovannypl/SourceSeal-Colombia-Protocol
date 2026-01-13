@@ -183,6 +183,47 @@ export async function registerRoutes(
     }
   });
 
+  // Ethical Filter Module (Ley 1978)
+  app.post(api.seals.ethicalFilter.path, async (req, res) => {
+    try {
+      const input = api.seals.ethicalFilter.input.parse(req.body);
+
+      // 1. Validate ZKP Commitment 238 (or matching commitment)
+      const seal = await storage.getSealByZkp(input.zkpCommitment);
+      if (!seal) {
+        return res.status(404).json({ message: "No se encontró un sello válido para este compromiso ZKP." });
+      }
+
+      // 2. Register Report
+      await storage.createReport({
+        sealId: seal.id,
+        description: `[FILTRO ÉTICO LEY 1978] ${input.description}`,
+        reporterId: "SISTEMA_ETICO_IA"
+      });
+
+      // 3. Trigger Enforcement Level 3 (Bloqueo Permanente)
+      const enforcement = await storage.createEnforcement({
+        sealId: seal.id,
+        level: 3,
+        action: "Bloqueo Permanente - Violación Ley 1978 (Imágenes Íntimas sin Consentimiento)",
+        authority: "Módulo de Filtro Ético de IA",
+        financialUsd: 0,
+        status: "active"
+      });
+
+      res.status(201).json(enforcement);
+    } catch (err) {
+      if (err instanceof z.ZodError) {
+        return res.status(400).json({
+          message: err.errors[0].message,
+          field: err.errors[0].path.join('.'),
+        });
+      }
+      console.error(err);
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  });
+
   // Simulate Financial Event (For Demo)
   app.post(api.enforcement.simulate.path, async (req, res) => {
     const { sealId, financialUsd } = req.body;

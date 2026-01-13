@@ -41,6 +41,19 @@ export const api = {
         404: errorSchemas.notFound,
       },
     },
+    ethicalFilter: {
+      method: 'POST' as const,
+      path: '/api/ethical-filter',
+      input: z.object({
+        zkpCommitment: z.string(),
+        description: z.string(),
+      }),
+      responses: {
+        201: z.custom<typeof enforcements.$inferSelect>(),
+        400: errorSchemas.validation,
+        404: errorSchemas.notFound,
+      },
+    },
   },
   reports: {
     create: {
