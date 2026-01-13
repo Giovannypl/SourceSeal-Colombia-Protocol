@@ -8,6 +8,12 @@ import crypto from "crypto";
 
 // --- LOGIC FROM PYTHON SOURCE ---
 
+const ETHICAL_SHARD_CONFIG = {
+  SHARD_ID: "ETHIC_AI_FILTER_COL_01",
+  ZKP_COMMITMENT: "238", // Tu compromiso maestro de integridad
+  LEGAL_BASE: "LEY_1978_COL"
+};
+
 // Constants
 const UMBRALES_DANO = {
   nivel1: 3,      // Reduced for demo (Original: 100)
@@ -205,8 +211,8 @@ export async function registerRoutes(
       const enforcement = await storage.createEnforcement({
         sealId: seal.id,
         level: 3,
-        action: "Bloqueo Permanente - Violación Ley 1978 (Imágenes Íntimas sin Consentimiento)",
-        authority: "Módulo de Filtro Ético de IA",
+        action: "Sanción Económica + Bloqueo de Cuentas - LEY_1978_COL (Contenido Íntimo sin Consentimiento)",
+        authority: "Fiscalía General",
         financialUsd: 0,
         status: "active"
       });
