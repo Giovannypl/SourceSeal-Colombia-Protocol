@@ -227,6 +227,17 @@ function ReportDialog({ sealId }: { sealId: number }) {
           </div>
           <div className="space-y-2">
             <label className="text-sm font-medium">Description of Violation</label>
+            <div className="flex gap-2 mb-2">
+              <Button 
+                type="button" 
+                variant="outline" 
+                size="sm" 
+                className="text-[10px] h-7 border-red-500/30 text-red-400 hover:bg-red-500/10"
+                onClick={() => setDescription("Contenido íntimo generado por IA sin consentimiento (LEY 1978)")}
+              >
+                LEY 1978 AI VIOLATION
+              </Button>
+            </div>
             <Textarea 
               value={description}
               onChange={(e) => setDescription(e.target.value)}
