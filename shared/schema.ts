@@ -35,6 +35,15 @@ export const enforcements = pgTable("enforcements", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+export const securityEvents = pgTable("security_events", {
+  id: serial("id").primaryKey(),
+  type: text("type").notNull(),
+  severity: text("severity").notNull(),
+  message: text("message").notNull(),
+  metadata: jsonb("metadata"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 // --- SCHEMAS ---
 
 export const insertSealSchema = createInsertSchema(seals).omit({ 
@@ -52,6 +61,11 @@ export const insertReportSchema = createInsertSchema(reports).omit({
   createdAt: true 
 });
 
+export const insertSecurityEventSchema = createInsertSchema(securityEvents).omit({
+  id: true,
+  createdAt: true
+});
+
 // --- TYPES ---
 
 export type Seal = typeof seals.$inferSelect;
@@ -61,6 +75,9 @@ export type Report = typeof reports.$inferSelect;
 export type InsertReport = z.infer<typeof insertReportSchema>;
 
 export type Enforcement = typeof enforcements.$inferSelect;
+
+export type SecurityEvent = typeof securityEvents.$inferSelect;
+export type InsertSecurityEvent = z.infer<typeof insertSecurityEventSchema>;
 
 // --- API TYPES ---
 

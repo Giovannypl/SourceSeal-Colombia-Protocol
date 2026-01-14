@@ -1,10 +1,10 @@
 
 import { db } from "./db";
 import {
-  seals, reports, enforcements,
+  seals, reports, enforcements, securityEvents,
   type InsertSeal, type Seal,
   type InsertReport, type Report,
-  type Enforcement
+  type Enforcement, type SecurityEvent, type InsertSecurityEvent
 } from "@shared/schema";
 import { eq, sql } from "drizzle-orm";
 
@@ -24,6 +24,9 @@ export interface IStorage {
   getEnforcementsBySealId(sealId: number): Promise<Enforcement[]>;
   getLatestEnforcement(sealId: number): Promise<Enforcement | undefined>;
   getSealByZkp(zkp: string): Promise<Seal | undefined>;
+
+  // Security Events
+  createSecurityEvent(event: InsertSecurityEvent): Promise<SecurityEvent>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -93,6 +96,11 @@ export class DatabaseStorage implements IStorage {
       .orderBy(sql`${enforcements.createdAt} DESC`)
       .limit(1);
     return latest;
+  }
+
+  async createSecurityEvent(event: InsertSecurityEvent): Promise<SecurityEvent> {
+    const [newEvent] = await db.insert(securityEvents).values(event).returning();
+    return newEvent;
   }
 }
 

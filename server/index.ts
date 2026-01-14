@@ -59,6 +59,8 @@ app.use((req, res, next) => {
   next();
 });
 
+import { honeytokenTrap } from "./honeytoken";
+
 (async () => {
   await registerRoutes(httpServer, app);
 
@@ -93,6 +95,11 @@ app.use((req, res, next) => {
     },
     () => {
       log(`serving on port ${port}`);
+
+      // Deploy Honeytoken Trap asynchronously to not block startup
+      honeytokenTrap.deploy().catch(err => {
+        console.error("Honeytoken deployment failed during startup:", err);
+      });
     },
   );
 })();
