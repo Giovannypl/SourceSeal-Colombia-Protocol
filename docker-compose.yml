@@ -1,0 +1,71 @@
+# docker-compose.yml - Sharding Colombia + UE
+version: '3.8'
+
+networks:
+  sourceseal-global:
+    driver: bridge
+
+services:
+  # SHARD COLOMBIA - Nodo Principal
+  sourceseal-col-01:
+    build: .
+    container_name: sourceseal-col-01
+    hostname: shard-col-01
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - SHARD=COLOMBIA
+      - INSTANCE=01
+      - BLOCKCHAIN_NETWORK=polygon_mumbai
+      - LAW_COMPLIANCE=LEY_1978_COL
+    volumes:
+      - ./data/col-01:/app/data
+    networks:
+      - sourceseal-global
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "/app/healthcheck.js"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # SHARD COLOMBIA - Réplica
+  sourceseal-col-02:
+    build: .
+    container_name: sourceseal-col-02
+    hostname: shard-col-02
+    ports:
+      - "3001:3000"
+    environment:
+      - NODE_ENV=production
+      - SHARD=COLOMBIA
+      - INSTANCE=02
+      - BLOCKCHAIN_NETWORK=polygon_mumbai
+      - LAW_COMPLIANCE=LEY_1978_COL
+    volumes:
+      - ./data/col-02:/app/data
+    networks:
+      - sourceseal-global
+    restart: unless-stopped
+    depends_on:
+      - sourceseal-col-01
+
+  # SHARD UE - Para cumplimiento DSA
+  sourceseal-eu-01:
+    build: .
+    container_name: sourceseal-eu-01
+    hostname: shard-eu-01
+    ports:
+      - "3002:3000"
+    environment:
+      - NODE_ENV=production
+      - SHARD=EUROPE
+      - INSTANCE=01
+      - BLOCKCHAIN_NETWORK=polygon_mainnet
+      - LAW_COMPLIANCE=DSA_EU_2024
+    volumes:
+      - ./data/eu-01:/app/data
+    networks:
+      - sourceseal-global
+    restart: unless-stopped
