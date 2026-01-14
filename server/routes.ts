@@ -2,9 +2,12 @@
 import type { Express } from "express";
 import type { Server } from "http";
 import { storage } from "./storage";
-import { api, errorSchemas } from "@shared/routes";
+import { api } from "@shared/routes";
 import { z } from "zod";
 import crypto from "crypto";
+import { db } from "./db";
+import { securityEvents } from "@shared/schema";
+import { sql } from "drizzle-orm";
 
 // --- LOGIC FROM PYTHON SOURCE ---
 
@@ -28,15 +31,15 @@ const LEY_1978 = {
   art20: "Sanciones por infracciones TIC"
 };
 
-// ZKP Simulation
-// Using a simple modular exponentiation for demo: g^secret mod p
-const ZKP_P = 509n; // Prime from python code (sympy.prime(97) is approx 509)
-const ZKP_G = 5n;
+// BigInt literals are not available when targeting lower than ES2020.
+const ZKP_P = BigInt(509);
+const ZKP_G = BigInt(5);
 
 function generarZKP(secret: number): string {
   // commitment = (g ^ secret) % p
   const secretBI = BigInt(secret);
-  // BigInt exponentiation
+  // BigInt exponentiation - using a simple loop for compatibility if needed, 
+  // but BigInt support usually includes ** if BigInt itself is supported.
   const commitment = (ZKP_G ** secretBI) % ZKP_P;
   return commitment.toString();
 }
@@ -244,6 +247,17 @@ export async function registerRoutes(
       res.json(enforcement);
     } else {
       res.json({ message: `Financial event of $${financialUsd} recorded. No new enforcement triggered.` });
+    }
+  });
+
+  // List Security Events
+  app.get("/api/security-events", async (_req, res) => {
+    try {
+      const events = await db.select().from(securityEvents).orderBy(sql`${securityEvents.createdAt} DESC`);
+      res.json(events);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Internal Server Error" });
     }
   });
 
