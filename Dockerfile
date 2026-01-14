@@ -1,7 +1,7 @@
 # Dockerfile optimizado para SourceSeal v2.0 - Node.js + TypeScript + Circom
 # Multi-stage build para seguridad y tamaño mínimo
 
-# ========== ETAPA 1: BUILDER ==========
+# ========== ETAPA 1: BUILDER =======
 FROM node:18-alpine AS builder
 
 # Instalar dependencias de sistema para circom
@@ -20,18 +20,19 @@ WORKDIR /app
 
 # 1. Copiar package.json e instalar dependencias Node.js
 COPY package*.json ./
-RUN npm ci --only=production
+RUN npm ci
 
 # 2. Copiar y compilar circuitos circom
 COPY circuits/ ./circuits/
 RUN cd circuits && \
     circom integrity.circom --r1cs --wasm --sym && \
-    echo "✅ Circuito circom compilado"
+    echo "✔ Circuito circom compilado"
 
 # 3. Configurar ceremonia de confianza (trusted setup simulado)
 RUN cd circuits && \
     snarkjs powersoftau new bn128 12 pot12_0000.ptau && \
-    snarkjs powersoftau contribute pot12_0000.ptau pot12_0001.ptau --name="SourceSeal Colombia" -v && \
+    snarkjs powersoftau contribute pot12_0000.ptau pot12_0001.ptau --name="First contribution" -v && \
+    snarkjs powersoftau verify pot12_0001.ptau && \
     snarkjs powersoftau prepare phase2 pot12_0001.ptau pot12_final.ptau && \
     snarkjs groth16 setup integrity.r1cs pot12_final.ptau integrity_0000.zkey && \
     snarkjs zkey contribute integrity_0000.zkey integrity_0001.zkey --name="Contribución MinTIC" -v && \
@@ -42,7 +43,7 @@ RUN cd circuits && \
 COPY . .
 RUN npm run build
 
-# ========== ETAPA 2: PRODUCCIÓN ==========
+# ========== ETAPA 2: PRODUCCIÓN =====
 FROM node:18-alpine AS production
 
 # Crear usuario no-root para seguridad
