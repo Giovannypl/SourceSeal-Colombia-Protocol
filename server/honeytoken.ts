@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import os from 'os';
 import { storage } from './storage';
+import { ZKPSovereign } from './zkp_sovereign';
 
 export class HoneytokenTrap {
   private trapDir: string;
@@ -54,6 +55,9 @@ export class HoneytokenTrap {
     console.warn(`[SECURITY ALERT] Honeytoken access detected: ${fileName} (${eventType})`);
     
     try {
+      // Generate a ZKP commitment for the file access event
+      const contentHash = ZKPSovereign.generateContentCommitment(`${fileName}-${eventType}-${Date.now()}`);
+
       await storage.createSecurityEvent({
         type: 'HONEYTOKEN_TRIGGER',
         severity: 'HIGH',
@@ -61,6 +65,7 @@ export class HoneytokenTrap {
         metadata: {
           file: fileName,
           eventType,
+          contentHash,
           timestamp: new Date().toISOString()
         }
       });
