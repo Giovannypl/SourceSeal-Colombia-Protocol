@@ -14,10 +14,11 @@ RUN npm install --legacy-peer-deps --omit=dev
 # 4. Copiar todo el resto del código (incluye el package-lock.json, pero ya no es crítico)
 COPY . .
 
-# 5. Intentar la compilación. Si falla, lo veremos en los logs.
-RUN npm run build 2>&1 || echo "⚠  Build step falló, continuando..."
+# 5. Compilar TypeScript y VERIFICAR el resultado
+RUN npm run build 2>&1 || echo "❌ El comando 'npm run build' falló."
+RUN echo "=== Contenido del directorio 'dist' ===" && ls -la dist/ 2>/dev/null || echo "⚠  La carpeta 'dist' no existe."
+RUN echo "=== Contenido del directorio 'dist/server' ===" && ls -la dist/server/ 2>/dev/null || echo "⚠  La carpeta 'dist/server' no existe."
 
 # 6. Exponer y ejecutar
 EXPOSE 3000
-# Asegúrate de que esta ruta coincida con tu punto de entrada real.
 CMD ["node", "dist/server/index.js"]
