@@ -8,6 +8,7 @@ import crypto from "crypto";
 import { db } from "./db";
 import { securityEvents } from "@shared/schema";
 import { sql } from "drizzle-orm";
+import { ZKPSovereign } from "./zkp_sovereign";
 
 // --- LOGIC FROM PYTHON SOURCE ---
 
@@ -255,6 +256,46 @@ export async function registerRoutes(
     try {
       const events = await db.select().from(securityEvents).orderBy(sql`${securityEvents.createdAt} DESC`);
       res.json(events);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  });
+
+  // External Audit - Verify Integrity using ZKP
+  app.post("/api/verify-integrity", async (req, res) => {
+    try {
+      const { proof, publicSignals } = req.body;
+
+      if (!proof || !publicSignals) {
+        return res.status(400).json({ message: "Proof and public signals are required for verification." });
+      }
+
+      // 1. Verify the cryptographic proof using ZKPSovereign
+      const isValid = await ZKPSovereign.verifyIntegrity(proof, publicSignals);
+
+      if (!isValid) {
+        return res.status(401).json({ 
+          verified: false, 
+          message: "FALLO DE INTEGRIDAD: La prueba criptográfica no es válida." 
+        });
+      }
+
+      // 2. Cross-reference public signal (content hash) with logged security events
+      const contentHash = publicSignals[0];
+      const [matchingEvent] = await db
+        .select()
+        .from(securityEvents)
+        .where(sql`metadata->>'contentHash' = ${contentHash}`)
+        .limit(1);
+
+      res.json({
+        verified: true,
+        message: "INTEGRIDAD CONFIRMADA: La prueba ZKP es válida para el evento registrado.",
+        eventDetected: !!matchingEvent,
+        timestamp: new Date().toISOString()
+      });
+
     } catch (err) {
       console.error(err);
       res.status(500).json({ message: "Internal Server Error" });

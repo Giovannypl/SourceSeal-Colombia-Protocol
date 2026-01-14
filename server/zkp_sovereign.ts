@@ -1,3 +1,4 @@
+// @ts-ignore
 import * as snarkjs from "snarkjs";
 import crypto from "crypto";
 
