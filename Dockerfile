@@ -15,7 +15,7 @@ RUN npm install --legacy-peer-deps --omit=dev
 COPY . .
 
 # 5. Compilar TypeScript y VERIFICAR el resultado
-RUN npm run build 2>&1 || echo "❌ El comando 'npm run build' falló."
+RUN echo "🔍 Forzando muestra de error TypeScript..." && npx tsc --project . --noEmit 2>&1 && npm run build 2>&1
 RUN echo "=== Contenido del directorio 'dist' ===" && ls -la dist/ 2>/dev/null || echo "⚠  La carpeta 'dist' no existe."
 RUN echo "=== Contenido del directorio 'dist/server' ===" && ls -la dist/server/ 2>/dev/null || echo "⚠  La carpeta 'dist/server' no existe."
 
