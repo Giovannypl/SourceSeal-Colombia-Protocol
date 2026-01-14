@@ -1,3 +1,4 @@
+import { describe, test, expect } from '@jest/globals';
 import { validatePathInBounds } from './path-validator';
 import path from 'path';
 
