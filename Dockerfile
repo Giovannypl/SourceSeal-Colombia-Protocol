@@ -1,25 +1,22 @@
 FROM node:18-alpine
 WORKDIR /app
 
-# 1. Instalar herramientas del sistema CRÍTICAS
-RUN apk add --no-cache python3 make g++ git
+# 1. Instalar herramientas necesarias
+RUN apk add --no-cache python3 make g++
 
-# 2. Copiar SOLO el package.json primero
-COPY package.json .
+# 2. Copiar y instalar dependencias
+COPY package.json package-lock.json ./
+RUN npm install --legacy-peer-deps
 
-# 3. Instalar dependencias IGNORANDO el package-lock.json existente.
-#    Esto fuerza a npm a resolver dependencias para este entorno específico.
-RUN npm install --legacy-peer-deps --omit=dev
-
-# 4. Copiar todo el resto del código (incluye el package-lock.json, pero ya no es crítico)
+# 3. Copiar todo el código
 COPY . .
 
-# 5. Compilar TypeScript y VERIFICAR el resultado
-RUN echo "🔍 Forzando muestra de error TypeScript..." && npx tsc --project . --noEmit 2>&1 && npm run build 2>&1
-RUN echo "=== Contenido del directorio 'dist' ===" && ls -la dist/ 2>/dev/null || echo "⚠  La carpeta 'dist' no existe."
-RUN echo "=== Contenido del directorio 'dist/server' ===" && ls -la dist/server/ 2>/dev/null || echo "⚠  La carpeta 'dist/server' no existe."
+# 4. Compilar TypeScript
+RUN npm run build
 
-# 6. Exponer y ejecutar
+# 5. Verificar que se creó el archivo principal
+RUN ls -la dist/server/index.js && echo "✅ Build COMPLETADO con éxito"
+
+# 6. Exponer puerto y ejecutar
 EXPOSE 3000
-RUN echo "✅ Contenedor construido. El archivo de entrada es:" && find . -name "index.js" 2>/dev/null | head -5
-CMD ["node", "-e", "const http = require('http'); const server = http.createServer((req, res) => { console.log('📨 Recibida petición a:', req.url); res.end('🚨 SourceSeal: PRUEBA SUPERADA. Servidor Node operativo.') }); const PORT = process.env.PORT || 3000; server.listen(PORT, () => console.log('✅ Servidor de prueba escuchando en puerto', PORT));"]
+CMD ["node", "dist/server/index.js"]
