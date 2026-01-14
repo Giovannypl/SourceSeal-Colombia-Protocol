@@ -57,7 +57,7 @@ app.use((req, res, next) => {
     next();
 });
 
-import { honeyTokenTrap } from "./honeytoken";
+export const honeyTokenTrap = {...};from "./honeytoken";
 
 (async () => {
     await registerRoutes(httpServer, app);
