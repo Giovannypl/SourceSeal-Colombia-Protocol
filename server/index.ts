@@ -67,37 +67,44 @@ app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || 500;
     const message = err.message || "Internal Server Error";
     res.status(status).json({ message });
-    throw err;
+    console.error(err); // Cambiado: no throw, solo log
 });
 
-// Importantly only setup vite in development and after
-// setting up all the other routes so the catch-all route
-// doesn't interfere with the other routes
-if (process.env.NODE_ENV === "production") {
-    serveStatic(app);
-} else {
-    const { setupVite } = await import("./setupVite");
-    await setupVite(httpServer, app);
+// IMPORTANTE: Esta lógica debe estar dentro de una función async
+async function setupDevelopment() {
+    if (process.env.NODE_ENV !== "production") {
+        try {
+            const { setupVite } = await import("./setupVite");
+            await setupVite(httpServer, app);
+        } catch (error) {
+            console.error("Failed to setup Vite:", error);
+        }
+    } else {
+        serveStatic(app);
+    }
 }
 
-// ALWAYS serve the app on the port specified in the environment variable PORT
-// Other ports are firewalled. Default to 5000 if not specified.
-// This serves both the API and the client.
-// It is the only port that is not firewalled.
+// Usar el puerto 3000 (coincide con Railway)
+const port = parseInt(process.env.PORT || "3000", 10);
 
-const port = parseInt(process.env.PORT || "5000", 10);
-httpServer.listen(
-    {
-        port,
-        host: "0.0.0.0",
-        reusePort: true,
-    },
-    () => {
-        log(`serving on port ${port}`);
-    }
-);
+// Inicializar y luego escuchar
+(async () => {
+    await setupDevelopment();
+    
+    httpServer.listen(
+        {
+            port,
+            host: "0.0.0.0",
+            reusePort: true,
+        },
+        () => {
+            log(`✅ SourceSeal ejecutándose en puerto ${port}`);
+            console.log(`🚀 Accede en: https://sourceseal-colombia-protocol-production.up.railway.app`);
+        }
+    );
+})();
 
-// Deploy Honeytoken Trap asynchronously to not block startup
+// Honeytoken
 honeyTokenTrap.deploy().catch((err) => {
-    console.error("Honeytoken deployment failed during startup:", err);
+    console.error("Honeytoken deployment failed:", err);
 });
