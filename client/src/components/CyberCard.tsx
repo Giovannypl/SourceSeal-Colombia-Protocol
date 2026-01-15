@@ -2,7 +2,7 @@ import { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import * as React from "react";
 
-interface CyberCardProps {
+export interface CyberCardProps {
   children: ReactNode;
   className?: string;
   title?: string;
