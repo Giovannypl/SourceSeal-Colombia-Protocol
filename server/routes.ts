@@ -193,6 +193,17 @@ export async function registerRoutes(
     }
   });
 
+  // Stop All Enforcements
+  app.post("/api/enforcement/stop-all", async (_req, res) => {
+    try {
+      await storage.stopAllEnforcements();
+      res.json({ message: "All enforcements stopped and system reset." });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  });
+
   // Ethical Filter Module (Ley 1978)
   app.post(api.seals.ethicalFilter.path, async (req, res) => {
     try {

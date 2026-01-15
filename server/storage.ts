@@ -24,6 +24,7 @@ export interface IStorage {
   getEnforcementsBySealId(sealId: number): Promise<Enforcement[]>;
   getLatestEnforcement(sealId: number): Promise<Enforcement | undefined>;
   getSealByZkp(zkp: string): Promise<Seal | undefined>;
+  stopAllEnforcements(): Promise<void>;
 
   // Security Events
   createSecurityEvent(event: InsertSecurityEvent): Promise<SecurityEvent>;
@@ -96,6 +97,11 @@ export class DatabaseStorage implements IStorage {
       .orderBy(sql`${enforcements.createdAt} DESC`)
       .limit(1);
     return latest;
+  }
+
+  async stopAllEnforcements(): Promise<void> {
+    await db.delete(enforcements);
+    await db.delete(reports);
   }
 
   async createSecurityEvent(event: InsertSecurityEvent): Promise<SecurityEvent> {
