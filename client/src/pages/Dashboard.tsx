@@ -1,14 +1,12 @@
 import { Link } from "wouter";
-import { useSeals } from "../hooks/use-seals";
-import { CyberCard } from "../components/CyberCard";
-import { CreateSealDialog } from "../components/CreateSealDialog";
-import { StatusBadge } from "../components/StatusBadge";
-import { Input } from "../components/ui/input";
-import { Button } from "../components/ui/button";
+import { useSeals } from "@/hooks/use-seals";
+import { CyberCard } from "@/components/CyberCard";
+import { CreateSealDialog } from "@/components/CreateSealDialog";
+import { StatusBadge } from "@/components/StatusBadge";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { Search, Loader2, ArrowRight, ShieldCheck, Database, FileCode } from "lucide-react";
 import { useState } from "react";
-import * as React from "react";
-import { apiRequest, queryClient } from "../lib/queryClient";
 
 export default function Dashboard() {
   const { data: seals, isLoading, error } = useSeals();
@@ -38,21 +36,6 @@ export default function Dashboard() {
             </div>
           </div>
           <div className="flex items-center gap-4">
-             <Button 
-               variant="outline" 
-               size="sm" 
-               className="font-mono text-xs border-destructive/30 text-destructive hover:bg-destructive hover:text-destructive-foreground"
-               onClick={() => {
-                 if (confirm("¿Estás seguro de que quieres detener todas las acciones de cumplimiento?")) {
-                   apiRequest("POST", "/api/enforcement/stop-all").then(() => {
-                     queryClient.invalidateQueries({ queryKey: ["/api/seals"] });
-                   });
-                 }
-               }}
-               data-testid="button-stop-all"
-             >
-               DETENER TODO
-             </Button>
              <div className="hidden md:flex items-center gap-2 px-3 py-1.5 bg-background/50 border border-primary/20 rounded-sm">
                 <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
                 <span className="text-xs font-mono text-primary/80">SYSTEM ONLINE</span>
