@@ -2,11 +2,11 @@
 import type { Express } from "express";
 import type { Server } from "http";
 import { storage } from "./storage";
-import { api } from "@shared/routes";
+import { api } from "../shared/routes";
 import { z } from "zod";
 import crypto from "crypto";
 import { db } from "./db";
-import { securityEvents } from "@shared/schema";
+import { securityEvents } from "../shared/schema";
 import { sql } from "drizzle-orm";
 import { ZKPSovereign } from "./zkp_sovereign";
 

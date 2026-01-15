@@ -2,10 +2,10 @@
 import { db } from "./db";
 import {
   seals, reports, enforcements, securityEvents,
-  type InsertSeal, type Seal,
+  type Seal,
   type InsertReport, type Report,
   type Enforcement, type SecurityEvent, type InsertSecurityEvent
-} from "@shared/schema";
+} from "../shared/schema";
 import { eq, sql } from "drizzle-orm";
 
 export interface IStorage {
