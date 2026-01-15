@@ -125,7 +125,7 @@ export async function registerRoutes(
       const seal = await storage.createSeal({
         contentId: input.contentId,
         wallet: input.wallet,
-        consentGiven: input.consentGiven,
+        consentGiven: !!input.consentGiven,
         zkpCommitment,
         sealHash,
         metadata
@@ -189,17 +189,6 @@ export async function registerRoutes(
           field: err.errors[0].path.join('.'),
         });
       }
-      res.status(500).json({ message: "Internal Server Error" });
-    }
-  });
-
-  // Stop All Enforcements
-  app.post("/api/enforcement/stop-all", async (_req, res) => {
-    try {
-      await storage.stopAllEnforcements();
-      res.json({ message: "All enforcements stopped and system reset." });
-    } catch (err) {
-      console.error(err);
       res.status(500).json({ message: "Internal Server Error" });
     }
   });
