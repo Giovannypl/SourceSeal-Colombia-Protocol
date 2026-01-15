@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, Loader2, ArrowRight, ShieldCheck, Database, FileCode } from "lucide-react";
 import { useState } from "react";
+import * as React from "react";
 
 export default function Dashboard() {
   const { data: seals, isLoading, error } = useSeals();
