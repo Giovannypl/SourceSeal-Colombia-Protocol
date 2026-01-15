@@ -1,13 +1,14 @@
 import { Link } from "wouter";
-import { useSeals } from "@/hooks/use-seals";
-import { CyberCard } from "@/components/CyberCard";
-import { CreateSealDialog } from "@/components/CreateSealDialog";
-import { StatusBadge } from "@/components/StatusBadge";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { useSeals } from "../hooks/use-seals";
+import { CyberCard } from "../components/CyberCard";
+import { CreateSealDialog } from "../components/CreateSealDialog";
+import { StatusBadge } from "../components/StatusBadge";
+import { Input } from "../components/ui/input";
+import { Button } from "../components/ui/button";
 import { Search, Loader2, ArrowRight, ShieldCheck, Database, FileCode } from "lucide-react";
 import { useState } from "react";
 import * as React from "react";
+import { apiRequest, queryClient } from "../lib/queryClient";
 
 export default function Dashboard() {
   const { data: seals, isLoading, error } = useSeals();
@@ -43,10 +44,8 @@ export default function Dashboard() {
                className="font-mono text-xs border-destructive/30 text-destructive hover:bg-destructive hover:text-destructive-foreground"
                onClick={() => {
                  if (confirm("¿Estás seguro de que quieres detener todas las acciones de cumplimiento?")) {
-                   import("@/lib/queryClient").then(({ apiRequest, queryClient }) => {
-                     apiRequest("POST", "/api/enforcement/stop-all").then(() => {
-                       queryClient.invalidateQueries({ queryKey: ["/api/seals"] });
-                     });
+                   apiRequest("POST", "/api/enforcement/stop-all").then(() => {
+                     queryClient.invalidateQueries({ queryKey: ["/api/seals"] });
                    });
                  }
                }}
