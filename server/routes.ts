@@ -98,11 +98,6 @@ export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
-  // Health check endpoint for Railway deployment
-  app.get("/health", (_req, res) => {
-    res.status(200).send("OK");
-  });
-
   // Create Seal
   app.post(api.seals.create.path, async (req, res) => {
     try {
