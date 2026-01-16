@@ -21,4 +21,4 @@ RUN (ls -la dist/server/index.js 2>/dev/null || ls -la dist/index.js 2>/dev/null
 
 # Exponer puerto y ejecutar
 EXPOSE 3000
-CMD ["node", "dist/server/index.js"]
+CMD ["node", "dist/index.cjs"]
