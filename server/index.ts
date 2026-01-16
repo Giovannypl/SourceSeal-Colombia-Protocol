@@ -2,6 +2,7 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
 import { createServer } from "http";
+import { honeytokenTrap } from "./honeytoken";
 
 const app = express();
 const httpServer = createServer(app);
@@ -57,9 +58,6 @@ app.use((req, res, next) => {
     next();
 });
 
-// Honeytoken trap initialization
-import { honeytokenTrap } from "./honeytoken";
-
 (async () => {
     await registerRoutes(httpServer, app);
 })();
@@ -68,10 +66,9 @@ app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || 500;
     const message = err.message || "Internal Server Error";
     res.status(status).json({ message });
-    console.error(err); // Cambiado: no throw, solo log
+    console.error(err);
 });
 
-// IMPORTANTE: Esta lógica debe estar dentro de una función async
 async function setupDevelopment() {
     if (process.env.NODE_ENV !== "production") {
         try {
@@ -85,10 +82,8 @@ async function setupDevelopment() {
     }
 }
 
-// Usar el puerto 5000 para Replit
 const port = 5000;
 
-// Inicializar y luego escuchar
 (async () => {
     await setupDevelopment();
     
@@ -103,7 +98,6 @@ const port = 5000;
     );
 })();
 
-// Honeytoken
 honeytokenTrap.deploy().catch((err) => {
     console.error("Honeytoken deployment failed:", err);
 });
