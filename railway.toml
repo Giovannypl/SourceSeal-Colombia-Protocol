@@ -1,7 +1,5 @@
-# railway.toml
-
 [build]
-builder = "RAILPACK"
+builder = "RAILPACK"   # fuerza Railpack como builder (ignora Dockerfile si existe)
 
 [deploy]
 runtime = "V2"
@@ -9,6 +7,7 @@ numReplicas = 1
 sleepApplication = false
 useLegacyStacker = false
 
+# Multi-región correcta (usa la clave exacta "us-west2")
 [deploy.multiRegionConfig."us-west2"]
 numReplicas = 1
 
