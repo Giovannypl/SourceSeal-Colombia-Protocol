@@ -98,6 +98,10 @@ export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
+  // Health check endpoint for Railway deployment
+  app.get("/health", (_req, res) => {
+    res.status(200).send("OK");
+  });
 
   // Create Seal
   app.post(api.seals.create.path, async (req, res) => {
@@ -200,38 +204,20 @@ export async function registerRoutes(
 
       // 1. Validate ZKP Commitment 238 (or matching commitment)
       const seal = await storage.getSealByZkp(input.zkpCommitment);
-      
-      // LOGIC OVERRIDE: If commitment is "238", it's a special master commitment
-      let targetSealId = seal?.id;
-      
-      if (!seal && input.zkpCommitment === ETHICAL_SHARD_CONFIG.ZKP_COMMITMENT) {
-        // Find the first seal or a default one if "238" is used as a master key
-        const allSeals = await storage.getSeals();
-        if (allSeals.length > 0) {
-          targetSealId = allSeals[0].id;
-        }
-      }
-
-      if (!targetSealId) {
-        // Find any seal as a fallback if the master commitment is present but no seals exist
-        const anySeals = await storage.getSeals();
-        if (anySeals.length > 0) {
-          targetSealId = anySeals[0].id;
-        } else {
-          return res.status(404).json({ message: "No se encontró un sello válido para este compromiso ZKP." });
-        }
+      if (!seal) {
+        return res.status(404).json({ message: "No se encontró un sello válido para este compromiso ZKP." });
       }
 
       // 2. Register Report
       await storage.createReport({
-        sealId: targetSealId,
+        sealId: seal.id,
         description: `[FILTRO ÉTICO LEY 1978] ${input.description}`,
         reporterId: "SISTEMA_ETICO_IA"
       });
 
       // 3. Trigger Enforcement Level 3 (Bloqueo Permanente)
       const enforcement = await storage.createEnforcement({
-        sealId: targetSealId,
+        sealId: seal.id,
         level: 3,
         action: "Sanción Económica + Bloqueo de Cuentas - LEY_1978_COL (Contenido Íntimo sin Consentimiento)",
         authority: "Fiscalía General",

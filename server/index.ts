@@ -46,6 +46,7 @@ app.use((req, res, next) => {
 
     res.on("finish", () => {
         const duration = Date.now() - start;
+        if (path === "/health") return; // Silence health checks
         if (path.startsWith("/api")) {
             let logLine = `${req.method} ${path} ${res.statusCode} in ${duration}ms`;
             if (capturedJsonResponse) {
@@ -84,31 +85,18 @@ async function setupDevelopment() {
 
 const port = process.env.PORT ? parseInt(process.env.PORT) : 5000;
 
-const startServer = async (retryCount = 0) => {
-    try {
-        httpServer.listen(
-            {
-                port,
-                host: "0.0.0.0",
-            },
-            () => {
-                log(`✅ SourceSeal ejecutándose en puerto ${port}`);
-            }
-        );
-    } catch (err: any) {
-        if (err.code === 'EADDRINUSE' && retryCount < 5) {
-            log(`Port ${port} in use, retrying in 1s... (Attempt ${retryCount + 1})`);
-            setTimeout(() => startServer(retryCount + 1), 1000);
-        } else {
-            console.error("Failed to start server:", err);
-            process.exit(1);
-        }
-    }
-};
-
 (async () => {
     await setupDevelopment();
-    await startServer();
+    
+    httpServer.listen(
+        {
+            port,
+            host: "0.0.0.0",
+        },
+        () => {
+            log(`✅ SourceSeal ejecutándose en puerto ${port}`);
+        }
+    );
 })();
 
 honeytokenTrap.deploy().catch((err) => {
