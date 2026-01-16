@@ -1,10 +1,14 @@
 [build]
 builder = "NIXPACKS"
-# Esto ejecutará "tsx script/build.ts" para crear la carpeta dist/
 buildCommand = "npm run build"
+buildEnvironment = "V3"
 
 [deploy]
-# Esto ejecutará el servidor compilado desde dist/server/index.js
+runtime = "V2"
+numReplicas = 1
 startCommand = "npm run start"
+sleepApplication = false
+useLegacyStacker = false
+multiRegionConfig = {"asia-southeast1-eqsg3a":{"numReplicas":1}}
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 10
