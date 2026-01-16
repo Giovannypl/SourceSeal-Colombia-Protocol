@@ -57,7 +57,8 @@ app.use((req, res, next) => {
     next();
 });
 
-export const honeyTokenTrap = {...};from "./honeytoken";
+// Honeytoken trap initialization
+import { honeyTokenTrap } from "./honeytoken";
 
 (async () => {
     await registerRoutes(httpServer, app);
@@ -84,8 +85,8 @@ async function setupDevelopment() {
     }
 }
 
-// Usar el puerto 3000 (coincide con Railway)
-const port = parseInt(process.env.PORT || "3000", 10);
+// Usar el puerto 5000 para Replit
+const port = 5000;
 
 // Inicializar y luego escuchar
 (async () => {
@@ -95,11 +96,9 @@ const port = parseInt(process.env.PORT || "3000", 10);
         {
             port,
             host: "0.0.0.0",
-            reusePort: true,
         },
         () => {
             log(`✅ SourceSeal ejecutándose en puerto ${port}`);
-            console.log(`🚀 Accede en: https://sourceseal-colombia-protocol-production.up.railway.app`);
         }
     );
 })();
