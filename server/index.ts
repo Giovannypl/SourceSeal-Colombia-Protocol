@@ -82,7 +82,7 @@ async function setupDevelopment() {
     }
 }
 
-const port = 5000;
+const port = process.env.PORT ? parseInt(process.env.PORT) : 5000;
 
 (async () => {
     await setupDevelopment();
