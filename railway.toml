@@ -1,12 +1,9 @@
+# Nixpacks configuration for Railway
 [build]
-builder = "NIXPACKS"
+command = "npm run build"
 
-[deploy]
-runtime = "V2"
-numReplicas = 1
-sleepApplication = false
-restartPolicyType = "ON_FAILURE"
-restartPolicyMaxRetries = 10
-healthCheckPath = "/health"
-healthCheckTimeout = 100
-healthCheckInterval = 30
+[setup]
+nixPkgs = ["nodejs-18"]
+
+[start]
+command = "npm run start"
