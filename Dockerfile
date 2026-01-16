@@ -12,12 +12,10 @@ RUN npm install --legacy-peer-deps --force
 COPY . .
 
 # Compilar TypeScript
-RUN npm run build || echo "⚠️ Build step completed with warnings"
+RUN npm run build
 
-# Verificar estructura (tolerante)
-RUN (ls -la dist/server/index.js 2>/dev/null || ls -la dist/index.js 2>/dev/null || echo "⚠️ index.js not found in expected locations") && \
-    echo "✅ Build finalizado" && \
-    find . -name "*.js" -type f | grep -E "(index\.js|server.*\.js)" | head -10 || true
+# Verificar estructura
+RUN ls -la dist/index.cjs && echo "✅ Build exitoso"
 
 # Exponer puerto y ejecutar
 EXPOSE 3000
