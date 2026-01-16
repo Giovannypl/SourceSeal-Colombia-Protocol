@@ -2,11 +2,11 @@
 import type { Express } from "express";
 import type { Server } from "http";
 import { storage } from "./storage";
-import { api } from "@shared/routes";
+import { api } from "../shared/routes";
 import { z } from "zod";
 import crypto from "crypto";
 import { db } from "./db";
-import { securityEvents } from "@shared/schema";
+import { securityEvents } from "../shared/schema";
 import { sql } from "drizzle-orm";
 import { ZKPSovereign } from "./zkp_sovereign";
 
@@ -39,10 +39,16 @@ const ZKP_G = BigInt(5);
 function generarZKP(secret: number): string {
   // commitment = (g ^ secret) % p
   const secretBI = BigInt(secret);
-  // BigInt exponentiation - using a simple loop for compatibility if needed, 
-  // but BigInt support usually includes ** if BigInt itself is supported.
-  const commitment = (ZKP_G ** secretBI) % ZKP_P;
-  return commitment.toString();
+  // Manual modular exponentiation for BigInt to satisfy older targets if necessary
+  let res = BigInt(1);
+  let base = ZKP_G % ZKP_P;
+  let exp = secretBI;
+  while (exp > 0n) {
+    if (exp % 2n === 1n) res = (res * base) % ZKP_P;
+    base = (base * base) % ZKP_P;
+    exp = exp / 2n;
+  }
+  return res.toString();
 }
 
 function hashMetadata(metadata: object): string {
@@ -125,7 +131,7 @@ export async function registerRoutes(
       const seal = await storage.createSeal({
         contentId: input.contentId,
         wallet: input.wallet,
-        consentGiven: input.consentGiven,
+        consentGiven: !!input.consentGiven,
         zkpCommitment,
         sealHash,
         metadata
