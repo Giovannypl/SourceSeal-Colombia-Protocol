@@ -1,9 +1,10 @@
-# Nixpacks configuration for Railway
 [build]
-command = "npm run build"
+builder = "NIXPACKS"
+# Esto ejecutará "tsx script/build.ts" para crear la carpeta dist/
+buildCommand = "npm run build"
 
-[setup]
-nixPkgs = ["nodejs-18"]
-
-[start]
-command = "npm run start"
+[deploy]
+# Esto ejecutará el servidor compilado desde dist/server/index.js
+startCommand = "npm run start"
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10
