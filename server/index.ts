@@ -2,6 +2,7 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
 import { createServer } from "http";
+import { honeytokenTrap } from "./honeytoken";
 
 const app = express();
 const httpServer = createServer(app);
@@ -57,8 +58,6 @@ app.use((req, res, next) => {
     next();
 });
 
-export const honeyTokenTrap = {...};from "./honeytoken";
-
 (async () => {
     await registerRoutes(httpServer, app);
 })();
@@ -67,14 +66,13 @@ app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || 500;
     const message = err.message || "Internal Server Error";
     res.status(status).json({ message });
-    console.error(err); // Cambiado: no throw, solo log
+    console.error(err);
 });
 
-// IMPORTANTE: Esta lógica debe estar dentro de una función async
 async function setupDevelopment() {
     if (process.env.NODE_ENV !== "production") {
         try {
-            const { setupVite } = await import("./setupVite");
+            const { setupVite } = await import("./vite");
             await setupVite(httpServer, app);
         } catch (error) {
             console.error("Failed to setup Vite:", error);
@@ -84,10 +82,8 @@ async function setupDevelopment() {
     }
 }
 
-// Usar el puerto 3000 (coincide con Railway)
-const port = parseInt(process.env.PORT || "3000", 10);
+const port = 5000;
 
-// Inicializar y luego escuchar
 (async () => {
     await setupDevelopment();
     
@@ -95,16 +91,13 @@ const port = parseInt(process.env.PORT || "3000", 10);
         {
             port,
             host: "0.0.0.0",
-            reusePort: true,
         },
         () => {
             log(`✅ SourceSeal ejecutándose en puerto ${port}`);
-            console.log(`🚀 Accede en: https://sourceseal-colombia-protocol-production.up.railway.app`);
         }
     );
 })();
 
-// Honeytoken
-honeyTokenTrap.deploy().catch((err) => {
+honeytokenTrap.deploy().catch((err) => {
     console.error("Honeytoken deployment failed:", err);
 });
