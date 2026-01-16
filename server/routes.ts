@@ -236,18 +236,28 @@ export async function registerRoutes(
 
   // Simulate Financial Event (For Demo)
   app.post(api.enforcement.simulate.path, async (req, res) => {
-    const { sealId, financialUsd } = req.body;
-    
-    // Verify seal exists
-    const seal = await storage.getSeal(sealId);
-    if (!seal) return res.status(404).json({ message: "Seal not found" });
+    try {
+      const { sealId, financialUsd } = api.enforcement.simulate.input.parse(req.body);
+      
+      // Verify seal exists
+      const seal = await storage.getSeal(sealId);
+      if (!seal) return res.status(404).json({ message: "Seal not found" });
 
-    const enforcement = await evaluateDamage(sealId, financialUsd);
+      const enforcement = await evaluateDamage(sealId, financialUsd);
 
-    if (enforcement) {
-      res.json(enforcement);
-    } else {
-      res.json({ message: `Financial event of $${financialUsd} recorded. No new enforcement triggered.` });
+      if (enforcement) {
+        res.json(enforcement);
+      } else {
+        res.json({ message: `Financial event of $${financialUsd} recorded. No new enforcement triggered.` });
+      }
+    } catch (err) {
+      if (err instanceof z.ZodError) {
+        return res.status(400).json({
+          message: err.errors[0].message,
+          field: err.errors[0].path.join('.'),
+        });
+      }
+      res.status(500).json({ message: "Internal Server Error" });
     }
   });
 
