@@ -58,7 +58,7 @@ app.use((req, res, next) => {
 });
 
 // Honeytoken trap initialization
-import { honeyTokenTrap } from "./honeytoken";
+import { honeytokenTrap } from "./honeytoken";
 
 (async () => {
     await registerRoutes(httpServer, app);
@@ -75,7 +75,7 @@ app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
 async function setupDevelopment() {
     if (process.env.NODE_ENV !== "production") {
         try {
-            const { setupVite } = await import("./setupVite");
+            const { setupVite } = await import("./vite");
             await setupVite(httpServer, app);
         } catch (error) {
             console.error("Failed to setup Vite:", error);
@@ -104,6 +104,6 @@ const port = 5000;
 })();
 
 // Honeytoken
-honeyTokenTrap.deploy().catch((err) => {
+honeytokenTrap.deploy().catch((err) => {
     console.error("Honeytoken deployment failed:", err);
 });
