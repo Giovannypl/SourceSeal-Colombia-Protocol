@@ -8,9 +8,9 @@
     "strict": true,
     "noEmit": false,
     "esModuleInterop": true,
-    "moduleResolution": "bundler",
+    "moduleResolution": "node",
     "resolveJsonModule": true,
-    "isolatedModules": true,
+    "isolatedModules": false,
     "jsx": "react-jsx",
     "outDir": "./dist",
     "rootDir": ".",
@@ -20,6 +20,6 @@
       "@shared/*": ["./shared/*"]
     }
   },
-  "include": ["server/**/*", "shared/**/*", "client/src/**/*"],
+  "include": ["server", "shared", "client/src"],
   "exclude": ["node_modules", "dist", "**/*.test.ts"]
 }
