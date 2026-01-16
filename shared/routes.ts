@@ -71,8 +71,8 @@ export const api = {
       method: 'POST' as const,
       path: '/api/enforcement/simulate',
       input: z.object({
-        sealId: z.number(),
-        financialUsd: z.number(),
+        sealId: z.coerce.number(),
+        financialUsd: z.coerce.number().default(0),
       }),
       responses: {
         200: z.custom<typeof enforcements.$inferSelect | { message: string }>(),

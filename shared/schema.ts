@@ -53,12 +53,14 @@ export const insertSealSchema = createInsertSchema(seals).omit({
   metadata: true,      // Generated on server
   createdAt: true 
 }).extend({
-  secret: z.number().min(1, "Secret must be provided for ZKP"),
+  secret: z.coerce.number().min(1, "Secret must be provided for ZKP"),
 });
 
 export const insertReportSchema = createInsertSchema(reports).omit({ 
   id: true, 
   createdAt: true 
+}).extend({
+  sealId: z.coerce.number()
 });
 
 export const insertSecurityEventSchema = createInsertSchema(securityEvents).omit({
