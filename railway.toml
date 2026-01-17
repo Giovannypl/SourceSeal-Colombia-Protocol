@@ -1,9 +1,0 @@
-# Nixpacks configuration for Railway
-[build]
-command = "npm run build"
-
-[setup]
-nixPkgs = ["nodejs-18"]
-
-[start]
-command = "npm run start"
