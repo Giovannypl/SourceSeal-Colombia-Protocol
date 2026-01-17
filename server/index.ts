@@ -76,8 +76,7 @@ app.get("/", (_req: Request, res: Response) => {
         status: "operational",
         endpoints: {
             health: "/health",
-            api: "/api/*",
-            docs: "https://github.com/your-repo/docs"
+            api: "/api/*"
         }
     });
 });
@@ -106,25 +105,7 @@ async function setupDevelopment() {
     }
 }
 
-// ========== PUERTO CONFIGURADO PARA RAILWAY ==========
-const port = process.env.PORT ? parseInt(process.env.PORT) : 3000;
-
-// ========== MANEJO DE SEÑALES PARA RAILWAY ==========
-process.on('SIGTERM', () => {
-    console.log('SIGTERM signal received: closing HTTP server');
-    httpServer.close(() => {
-        console.log('HTTP server closed');
-        process.exit(0);
-    });
-});
-
-process.on('SIGINT', () => {
-    console.log('SIGINT signal received: closing HTTP server');
-    httpServer.close(() => {
-        console.log('HTTP server closed');
-        process.exit(0);
-    });
-});
+const port = process.env.PORT ? parseInt(process.env.PORT) : 5000;
 
 // ========== INICIAR SERVIDOR ==========
 (async () => {
