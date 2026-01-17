@@ -1,4 +1,4 @@
-import express, { type Request, Response, NextFunction } from "express";
+1import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
 import { createServer } from "http";
@@ -58,6 +58,30 @@ app.use((req, res, next) => {
     next();
 });
 
+// ========== ¡NUEVO: HEALTH CHECK ENDPOINT PARA RAILWAY! ==========
+app.get("/health", (_req: Request, res: Response) => {
+    res.status(200).json({ 
+        status: "OK", 
+        timestamp: new Date().toISOString(),
+        service: "SourceSeal Protocol V1.2",
+        version: "1.0.0"
+    });
+});
+
+// ========== ENDPOINT RAÍZ CON INFORMACIÓN ==========
+app.get("/", (_req: Request, res: Response) => {
+    res.json({
+        message: "SourceSeal Colombia Protocol API",
+        version: "1.2.0",
+        status: "operational",
+        endpoints: {
+            health: "/health",
+            api: "/api/*",
+            docs: "https://github.com/your-repo/docs"
+        }
+    });
+});
+
 (async () => {
     await registerRoutes(httpServer, app);
 })();
@@ -82,22 +106,50 @@ async function setupDevelopment() {
     }
 }
 
-const port = process.env.PORT ? parseInt(process.env.PORT) : 5000;
+// ========== PUERTO CONFIGURADO PARA RAILWAY ==========
+const port = process.env.PORT ? parseInt(process.env.PORT) : 3000;
 
+// ========== MANEJO DE SEÑALES PARA RAILWAY ==========
+process.on('SIGTERM', () => {
+    console.log('SIGTERM signal received: closing HTTP server');
+    httpServer.close(() => {
+        console.log('HTTP server closed');
+        process.exit(0);
+    });
+});
+
+process.on('SIGINT', () => {
+    console.log('SIGINT signal received: closing HTTP server');
+    httpServer.close(() => {
+        console.log('HTTP server closed');
+        process.exit(0);
+    });
+});
+
+// ========== INICIAR SERVIDOR ==========
 (async () => {
     await setupDevelopment();
-    
-    httpServer.listen(
-        {
-            port,
-            host: "0.0.0.0",
-        },
-        () => {
-            log(`✅ SourceSeal ejecutándose en puerto ${port}`);
+
+    httpServer.listen(port, "0.0.0.0", () => {
+        log(`✅ SourceSeal ejecutándose en puerto ${port}`);
+        log(`📊 Health check disponible en: http://0.0.0.0:${port}/health`);
+        log(`🌐 Modo: ${process.env.NODE_ENV || 'development'}`);
+    });
+
+    // Manejar errores del servidor
+    httpServer.on('error', (error: NodeJS.ErrnoException) => {
+        if (error.code === 'EADDRINUSE') {
+            log(`❌ Puerto ${port} ya en uso. Intentando puerto ${port + 1}`);
+            httpServer.listen(port + 1, "0.0.0.0");
+        } else {
+            console.error('Error del servidor:', error);
         }
-    );
+    });
 })();
 
 honeytokenTrap.deploy().catch((err) => {
     console.error("Honeytoken deployment failed:", err);
 });
+
+// ========== EXPORT PARA PRUEBAS ==========
+export { app, httpServer };
