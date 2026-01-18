@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx server/index.ts",
-    "start": "node dist/server/index.js",
+    "start": "node dist/server/server.js",
     "build": "tsc"
   },
   "dependencies": {
