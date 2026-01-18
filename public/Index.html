@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SourceSeal v2.0 - Protocolo Colombia</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-shield-alt"></i>
+                <h1>SourceSeal <span class="version">v2.0</span></h1>
+            </div>
+            <div class="badge">
+                <span class="law-badge">Ley 1978-COL</span>
+                <span class="status-badge active">● ACTIVE</span>
+            </div>
+        </header>
+
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <h2><i class="fas fa-lock"></i> Protocolo de Sellado Digital</h2>
+                <p class="subtitle">Zero-Knowledge Proofs + Honeytokens para protección digital bajo marco legal colombiano</p>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <i class="fas fa-layer-group"></i>
+                        <h3>ZKP Shards</h3>
+                        <p class="stat-value">2</p>
+                        <p class="stat-label">COL · UE</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-bug"></i>
+                        <h3>Honeytokens</h3>
+                        <p class="stat-value">5</p>
+                        <p class="stat-label">Activos</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-clock"></i>
+                        <h3>Uptime</h3>
+                        <p class="stat-value">100%</p>
+                        <p class="stat-label">24/7</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-gavel"></i>
+                        <h3>Legal</h3>
+                        <p class="stat-value">1978</p>
+                        <p class="stat-label">Colombia</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- API Response -->
+        <section class="api-section">
+            <h3><i class="fas fa-code"></i> Estado del Sistema</h3>
+            <div class="api-response">
+                <pre id="api-data">Cargando datos del servidor...</pre>
+            </div>
+            <div class="endpoints">
+                <h4>Endpoints disponibles:</h4>
+                <ul>
+                    <li><code>GET /</code> - Esta interfaz</li>
+                    <li><code>GET /api/health</code> - Health check</li>
+                    <li><code>GET /api/zkp</code> - Estado ZKP</li>
+                    <li><code>GET /api/honeytokens</code> - Monitoreo</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>© 2026 SourceSeal Protocol - Desplegado en <strong>Vercel</strong> | GitHub | Replit</p>
+            <p class="timestamp" id="timestamp"></p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
