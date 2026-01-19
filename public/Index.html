@@ -3,83 +3,133 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SourceSeal v2.0 - Protocolo Colombia</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>SourceSeal v2.0</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #0f172a;
+            color: white;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 2px solid #334155;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .logo h1 {
+            margin: 0;
+            color: #60a5fa;
+        }
+        .badge {
+            background: #065f46;
+            color: #a7f3d0;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        .card {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            padding: 20px;
+        }
+        .card h3 {
+            color: #94a3b8;
+            margin-top: 0;
+        }
+        .api-box {
+            background: #0f172a;
+            border: 1px solid #1e293b;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+        pre {
+            color: #7dd3fc;
+            font-family: monospace;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <!-- Header -->
-        <header class="header">
+        <div class="header">
             <div class="logo">
-                <i class="fas fa-shield-alt"></i>
-                <h1>SourceSeal <span class="version">v2.0</span></h1>
+                <h1>🚀 SourceSeal v2.0</h1>
             </div>
-            <div class="badge">
-                <span class="law-badge">Ley 1978-COL</span>
-                <span class="status-badge active">● ACTIVE</span>
-            </div>
-        </header>
+            <div class="badge">Ley 1978-COL ● ACTIVE</div>
+        </div>
 
-        <!-- Hero Section -->
-        <section class="hero">
-            <div class="hero-content">
-                <h2><i class="fas fa-lock"></i> Protocolo de Sellado Digital</h2>
-                <p class="subtitle">Zero-Knowledge Proofs + Honeytokens para protección digital bajo marco legal colombiano</p>
-                
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <i class="fas fa-layer-group"></i>
-                        <h3>ZKP Shards</h3>
-                        <p class="stat-value">2</p>
-                        <p class="stat-label">COL · UE</p>
-                    </div>
-                    <div class="stat-card">
-                        <i class="fas fa-bug"></i>
-                        <h3>Honeytokens</h3>
-                        <p class="stat-value">5</p>
-                        <p class="stat-label">Activos</p>
-                    </div>
-                    <div class="stat-card">
-                        <i class="fas fa-clock"></i>
-                        <h3>Uptime</h3>
-                        <p class="stat-value">100%</p>
-                        <p class="stat-label">24/7</p>
-                    </div>
-                    <div class="stat-card">
-                        <i class="fas fa-gavel"></i>
-                        <h3>Legal</h3>
-                        <p class="stat-value">1978</p>
-                        <p class="stat-label">Colombia</p>
-                    </div>
-                </div>
+        <div class="grid">
+            <div class="card">
+                <h3>ZKP Shards</h3>
+                <div style="font-size: 2rem; color: #60a5fa;">2</div>
+                <div style="color: #94a3b8;">COL · UE</div>
             </div>
-        </section>
+            <div class="card">
+                <h3>Honeytokens</h3>
+                <div style="font-size: 2rem; color: #60a5fa;">5</div>
+                <div style="color: #94a3b8;">Activos</div>
+            </div>
+            <div class="card">
+                <h3>Legal Framework</h3>
+                <div style="font-size: 2rem; color: #60a5fa;">1978</div>
+                <div style="color: #94a3b8;">Colombia</div>
+            </div>
+            <div class="card">
+                <h3>Uptime</h3>
+                <div style="font-size: 2rem; color: #60a5fa;">100%</div>
+                <div style="color: #94a3b8;">24/7 Monitoring</div>
+            </div>
+        </div>
 
-        <!-- API Response -->
-        <section class="api-section">
-            <h3><i class="fas fa-code"></i> Estado del Sistema</h3>
-            <div class="api-response">
-                <pre id="api-data">Cargando datos del servidor...</pre>
-            </div>
-            <div class="endpoints">
-                <h4>Endpoints disponibles:</h4>
-                <ul>
-                    <li><code>GET /</code> - Esta interfaz</li>
-                    <li><code>GET /api/health</code> - Health check</li>
-                    <li><code>GET /api/zkp</code> - Estado ZKP</li>
-                    <li><code>GET /api/honeytokens</code> - Monitoreo</li>
-                </ul>
-            </div>
-        </section>
+        <div class="api-box">
+            <h3>Estado del Sistema</h3>
+            <pre id="apiData">Cargando...</pre>
+        </div>
 
-        <!-- Footer -->
-        <footer class="footer">
-            <p>© 2026 SourceSeal Protocol - Desplegado en <strong>Vercel</strong> | GitHub | Replit</p>
-            <p class="timestamp" id="timestamp"></p>
-        </footer>
+        <div class="footer">
+            <p>© 2026 SourceSeal Protocol | Desplegado en Vercel</p>
+            <p id="timestamp"></p>
+        </div>
     </div>
 
-    <script src="app.js"></script>
+    <script>
+        // Cargar datos de la API
+        fetch('/api/status')
+            .then(r => r.json())
+            .then(data => {
+                document.getElementById('apiData').textContent = 
+                    JSON.stringify(data, null, 2);
+            });
+
+        // Mostrar hora actual
+        document.getElementById('timestamp').textContent = 
+            'Última actualización: ' + new Date().toLocaleString('es-CO');
+    </script>
 </body>
 </html>
