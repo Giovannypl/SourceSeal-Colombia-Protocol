@@ -1,15 +1,22 @@
 const express = require('express');
 const app = express();
-const PORT = 3000;
-
+const PORT = process.env.PORT || 3000;
+app.use(express.static('public'));
 app.get('/', (req, res) => {
-    res.json({
-        message: 'SourceSeal Colombia Protocol V1.2',
-        status: 'ACTIVE',
-        timestamp: new Date().toISOString()
-    });
+  res.sendFile(__dirname + '/public/index.html');
 });
-
-app.listen(PORT, () => {
-    console.log('✅ SourceSeal funcionando en puerto 3000');
+app.get('/api/status', (req, res) => {
+  res.json({
+    message: 'SourceSeal Colombia Protocol V1.2',
+    status: 'ACTIVE',
+    ley: '1978-COL',
+    zkp_shards: ['COL', 'UE'],
+    timestamp: new Date().toISOString()
+  });
+});
+app.get('/api/health', (req, res) => {
+  res.send('OK');
+});
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`✅ SourceSeal ejecutándose en puerto ${PORT}`);
 });
