@@ -1,12 +1,15 @@
 {
   "name": "source-seal-colombia-protocol",
   "version": "1.0.0",
+  "description": "Servidor principal",
   "main": "server/index.ts",
   "scripts": {
-    "dev": "tsx server/index.ts"
+    "dev": "tsx server/index.ts",
+    "start": "tsx server/index.ts"
   },
   "devDependencies": {
     "tsx": "^4.21.0",
-    "typescript": "^5.3.0"
-  }
+    "typescript": "^5.3.3"
+  },
+  "type": "module"
 }
