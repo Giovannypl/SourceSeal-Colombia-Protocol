@@ -1,15 +1,17 @@
 {
   "name": "source-seal-colombia-protocol",
-  "version": "1.2.0",
+  "version": "2.0.0",
+  "description": "SourceSeal Colombia Protocol - Digital Sealing System with ZKP",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js"
   },
   "dependencies": {
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "cors": "^2.8.5"
   },
-  "engines": {
-    "node": "18.x"
-  }
+  "keywords": ["zkp", "colombia", "digital-seal", "blockchain"],
+  "author": "Giovanny Paredes",
+  "license": "MIT"
 }
