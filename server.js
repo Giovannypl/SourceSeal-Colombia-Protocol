@@ -1,24 +1,18 @@
+console.log("🎯 Iniciando servidor básico...");
+
 const express = require('express');
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = 3000;
 
 app.get('/', (req, res) => {
-    res.json({
-        message: 'SourceSeal Colombia Protocol V1.2',
-        status: 'ACTIVE',
-        timestamp: new Date().toISOString()
-    });
-});
-
-app.get('/health', (req, res) => {
-    res.json({ 
-        status: 'OK', 
-        timestamp: new Date().toISOString(),
-        uptime: process.uptime()
-    });
+  res.json({
+    success: true,
+    message: "¡API FUNCIONANDO!",
+    timestamp: new Date().toISOString()
+  });
 });
 
 app.listen(PORT, () => {
-    console.log('✅ SourceSeal Colombia Protocol V1.2 funcionando');
-    console.log(`🌐 Puerto: ${PORT}`);
+  console.log("✅ Servidor listo en puerto", PORT);
+  console.log("🌐 Abre: https://" + process.env.REPL_SLUG + "." + process.env.REPL_OWNER + ".repl.co");
 });
