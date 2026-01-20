@@ -67,7 +67,7 @@ app.get('/seals', (req, res) => {
 });
 
 // Iniciar servidor
-app.listen(PORT, () => {
+app.listen(PORT,'0.0.0.0',() => {
     console.log(`✅ SourceSeal Colombia Protocol V1.2`);
     console.log(`🌐 URL: https://${process.env.REPL_SLUG}.${process.env.REPL_OWNER}.repl.co`);
     console.log(`📡 Puerto: ${PORT}`);
