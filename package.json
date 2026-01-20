@@ -4,8 +4,8 @@
   "description": "Servidor principal",
   "main": "server/index.ts",
   "scripts": {
-    "dev": "tsx server/index.ts",
-    "start": "tsx server/index.ts"
+    "start": "tsx server/index.ts",
+    "dev": "tsx server/index.ts"
   },
   "devDependencies": {
     "tsx": "^4.21.0",
