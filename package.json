@@ -1,12 +1,12 @@
 {
-  "name": "mi-proyecto",
+  "name": "source-seal-colombia-protocol",
   "version": "1.0.0",
   "main": "server/index.ts",
   "scripts": {
     "dev": "tsx server/index.ts"
   },
   "devDependencies": {
-    "tsx": "^4.7.0",
+    "tsx": "^4.21.0",
     "typescript": "^5.3.0"
   }
 }
