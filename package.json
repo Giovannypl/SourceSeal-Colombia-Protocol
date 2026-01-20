@@ -1,15 +1,15 @@
 {
-  "name": "sourceseal",
-  "version": "2.0.0",
+  "name": "sourceseal-colombia-protocol",
+  "version": "1.2.0",
+  "description": "SourceSeal Colombia Protocol V1.2",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "dev": "node server.js"
   },
   "dependencies": {
-    "express": "^4.18.2"
+    "express": "4.18.2"
   },
-  "devDependencies": {
-    "tsx": "^4.21.0",
-    "typescript": "^5.9.3"
-  }
+  "author": "Giovanny Paredes",
+  "license": "MIT"
 }
