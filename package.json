@@ -1,15 +1,18 @@
 {
-  "name": "source-seal-colombia-protocol",
-  "version": "1.0.0",
-  "description": "Servidor principal",
-  "main": "server/index.ts",
+  "name": "sourceseal-colombia-protocol",
+  "version": "1.2.0",
+  "description": "Sistema de sellado digital con ZKP para Colombia",
+  "main": "server.js",
   "scripts": {
-    "start": "tsx server/index.ts",
-    "dev": "tsx server/index.ts"
+    "start": "node server.js",
+    "dev": "node server.js"
   },
-  "devDependencies": {
-    "tsx": "^4.21.0",
-    "typescript": "^5.3.3"
+  "dependencies": {
+    "express": "^4.18.2"
   },
-  "type": "module"
+  "engines": {
+    "node": "18.x"
+  },
+  "author": "Giovanny Paredes",
+  "license": "MIT"
 }
