@@ -1,20 +1,16 @@
+cat > server.js << 'EOF'
+console.log("🔄 Iniciando reconstrucción...");
+
 const express = require('express');
 const app = express();
 const PORT = 3000;
 
-// Solo 1 endpoint simple
+// Solo 1 ruta para probar
 app.get('/', (req, res) => {
     res.json({
-        message: '✅ ¡FUNCIONA! SourceSeal Colombia Protocol V1.2',
-        status: 'ACTIVE',
+        message: "✅ ¡RECONSTRUIDO! SourceSeal V1.2",
+        status: "ACTIVE",
         timestamp: new Date().toISOString(),
-        author: 'Giovanny Paredes'
+        note: "Proyecto reconstruido después del reinicio"
     });
-});
-
-// Solo 1 console.log
-app.listen(PORT, () => {
-    console.log('🎉 ¡SERVIDOR FUNCIONANDO!');
-    console.log('🌐 URL: https://' + process.env.REPL_SLUG + '.' + process.env.REPL_OWNER + '.repl.co');
-    console.log('⏰ Hora: ' + new Date().toLocaleTimeString());
 });
