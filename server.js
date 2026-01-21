@@ -1,7 +1,3 @@
-# 1. Primero, verifica qué hay en server.js
-head -50 server.js
-
-# 2. Si quieres que / devuelva JSON, actualízalo:
 cat > server.js << 'EOF'
 console.log("🚀 SourceSeal Colombia Protocol V2.0");
 const http = require('http');
@@ -139,7 +135,3 @@ server.listen(PORT, '0.0.0.0', () => {
     console.log(`🛡️ Listo para crear seals con ZKP!`);
 });
 EOF
-
-# 3. Reinicia el servidor
-pkill -f node
-node server.js
