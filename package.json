@@ -1,22 +1,18 @@
 {
   "name": "sourceseal-colombia-protocol",
-  "version": "1.2.0",
-  "description": "SourceSeal Colombia Protocol V1.2",
-  "name": "source-seal-colombia-protocol",
   "version": "2.0.0",
-  "description": "SourceSeal Colombia Protocol - Digital Sealing System with ZKP",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "node server.js"
+    "dev": "npm run dev"  // o el comando que uses en Replit
   },
   "dependencies": {
-    "express": "4.18.2"
-  },
     "express": "^4.18.2",
     "cors": "^2.8.5"
+    // agrega aquí otras deps como "lucide-react": "^0.292.0", etc.
   },
-  "keywords": ["zkp", "colombia", "digital-seal", "blockchain"],
-  "author": "Giovanny Paredes",
-  "license": "MIT"
- }
+  "engines": {
+    "node": ">=20"
+  },
+  "description": "SourceSeal Colombia Protocol - ZKP Privacy-First + Honeytokens + Ley 1978"
+}
