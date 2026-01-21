@@ -1,10 +1,3 @@
-# 1. MATA EL SERVIDOR VIEJO
-pkill -f node
-
-# 2. INSTALA DEPENDENCIAS CORRECTAS
-npm install express nodemon
-
-# 3. ACTUALIZA APP.JS CON CÓDIGO CORRECTO
 cat > app.js << 'EOF'
 console.log("🚀 SOURCESEAL COLOMBIA V2.0 - PRODUCTION READY");
 const http = require('http');
@@ -45,6 +38,15 @@ const server = http.createServer((req, res) => {
 });
 
 const PORT = process.env.PORT || 9999;
+const fs = require('fs');
+const path = require('path');
+
+// Sirve archivos estáticos
+if (req.url === '/dashboard' && req.method === 'GET') {
+    const html = fs.readFileSync(path.join(__dirname, 'public/index.html'), 'utf8');
+    res.writeHead(200, {'Content-Type': 'text/html'});
+    res.end(html);
+}
 server.listen(PORT, '0.0.0.0', () => {
     console.log(`✅ API ZKP operativa en puerto: ${PORT}`);
     console.log(`🌐 Local: http://localhost:${PORT}`);
@@ -52,6 +54,3 @@ server.listen(PORT, '0.0.0.0', () => {
     console.log(`📊 Status: SourceSeal Colombia Protocol activo`);
 });
 EOF
-
-# 4. INICIA EL SERVIDOR CON NODEMON
-npm run dev
