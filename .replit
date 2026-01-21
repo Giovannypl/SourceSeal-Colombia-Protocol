@@ -1,60 +1,10 @@
-modules = ["nodejs-20", "postgresql-16", "web"]
-run = "npm run dev"
-hidden = [".config", ".git", "generated-icon.png", "node_modules", "dist"]
-
-[nix]
-channel = "stable-24_05"
-packages = ["yakut", "run", "vlang"]
+language = "nodejs"
+run = "npm start"
 
 [[ports]]
 localPort = 3000
-externalPort = 3003
-
-[[ports]]
-localPort = 5000
 externalPort = 80
 
 [[ports]]
-localPort = 5001
-externalPort = 3001
-
-[[ports]]
-localPort = 5002
-externalPort = 3000
-
-[[ports]]
-localPort = 5003
-externalPort = 3002
-
-[[ports]]
-localPort = 8080
-externalPort = 8080
-
-[env]
-PORT = "5000"
-
-[deployment]
-deploymentTarget = "autoscale"
-run = ["node", "./dist/index.cjs"]
-build = ["npm", "run", "build"]
-
-[workflows]
-runButton = "Project"
-
-[[workflows.workflow]]
-name = "Project"
-mode = "parallel"
-author = "agent"
-
-[[workflows.workflow.tasks]]
-task = "workflow.run"
-args = "Start application"
-
-[[workflows.workflow]]
-name = "Start application"
-author = "agent"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "npm run dev"
-waitForPort = 5000
+localPort = 3000
+externalPort = 443
