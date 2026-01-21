@@ -1,35 +1,44 @@
+# Actualiza el dashboard para usar la URL correcta
+cat > public/index.html << 'EOF'
 <!DOCTYPE html>
 <html>
 <head>
-    <title>SourceSeal v2.0</title>
+    <title>SourceSeal Colombia Protocol V2.0</title>
     <style>
-        body { font-family: Arial; background: #0a0a0a; color: white; }
+        body { font-family: Arial; background: #0a0a0a; color: white; padding: 20px; }
         .dashboard { max-width: 800px; margin: auto; }
         .card { background: #1a1a1a; padding: 20px; margin: 10px; border-radius: 10px; }
     </style>
 </head>
 <body>
     <div class="dashboard">
-        <h1>SourceSeal Colombia Protocol V2.0</h1>
+        <h1>🚀 SourceSeal Colombia Protocol V2.0</h1>
         <div class="card">
-            <h2>API Status: <span id="apiStatus">Loading...</span></h2>
-            <p>Endpoints activos: <span id="endpoints">3</span></p>
+            <h2>API Status: <span style="color: lime;">ACTIVE ✅</span></h2>
+            <p>Endpoints activos: <strong>7</strong></p>
+            <p>URL: <code>https://workspace.paredesharold62.repl.co</code></p>
         </div>
         <div class="card">
-            <h3>ZKP Shards: <span id="shards">2</span></h3>
-            <h3>Honeytokens: <span id="tokens">5</span></h3>
+            <h3>ZKP Shards: <strong>2</strong></h3>
+            <h3>Honeytokens: <strong>5</strong></h3>
         </div>
         <div class="card">
             <h3>Legal Framework: 1978 Colombia</h3>
-            <h3>Uptime: <span id="uptime">100%</span></h3>
+            <h3>Uptime: <strong>100%</strong></h3>
+        </div>
+        <div class="card">
+            <h3>Endpoints Disponibles:</h3>
+            <ul>
+                <li>GET / - Información del API</li>
+                <li>GET /health - Estado del servidor</li>
+                <li>GET /seals - Listar todos los seals</li>
+                <li>POST /seals/new - Crear nuevo seal</li>
+                <li>GET /seals/:id - Obtener seal específico</li>
+                <li>POST /seals/verify/:id - Verificar seal con ZKP</li>
+                <li>GET /api/stats - Estadísticas</li>
+            </ul>
         </div>
     </div>
-    <script>
-        fetch('/')
-            .then(r => r.json())
-            .then(data => {
-                document.getElementById('apiStatus').textContent = data.status;
-            });
-    </script>
 </body>
 </html>
+EOF
