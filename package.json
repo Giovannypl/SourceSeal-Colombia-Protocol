@@ -11,7 +11,7 @@ cat > package.json << 'EOF'
     "express": "^4.18.2"
   },
   "devDependencies": {
-    "nodemon": "^3.1.11"
+    "nodemon": "^3.0.3"
   }
 }
 EOF
