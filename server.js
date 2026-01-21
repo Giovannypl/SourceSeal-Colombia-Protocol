@@ -30,3 +30,28 @@ EOF
 
 # Ejecutar
 node simple-server.js
+// Endpoint para crear un nuevo sello (ZKP)
+app.post('/seals/new', (req, res) => {
+  const { data, owner, metadata } = req.body;
+  
+  // Simulación de generación de ZKP
+  const sealId = `zkp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  const timestamp = new Date().toISOString();
+  
+  // En un sistema real, aquí iría la generación del proof ZKP
+  const proof = {
+    sealId,
+    timestamp,
+    dataHash: require('crypto').createHash('sha256').update(data).digest('hex'),
+    owner,
+    metadata,
+    zkpProof: "simulated_proof_placeholder", // En realidad sería un proof ZKP real
+    verified: true
+  };
+  
+  res.json({
+    success: true,
+    message: "Sello ZKP creado exitosamente",
+    seal: proof
+  });
+});
