@@ -1,0 +1,27 @@
+cat > dashboard.html << 'EOF'
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SourceSeal Dashboard</title>
+    <style>
+        body { font-family: Arial; background: black; color: lime; padding: 20px; }
+        .status { background: darkgreen; padding: 20px; border-radius: 10px; }
+    </style>
+</head>
+<body>
+    <h1>🚀 SourceSeal Colombia V2.0</h1>
+    <div class="status">
+        <h2>✅ API OPERATIVA</h2>
+        <p id="data">Cargando...</p>
+    </div>
+    <script>
+        fetch('https://source-seal-colombia-protocol-v-2-0-mdzimtwrt.vercel.app')
+            .then(r => r.json())
+            .then(data => {
+                document.getElementById('data').innerHTML = 
+                    JSON.stringify(data, null, 2);
+            });
+    </script>
+</body>
+</html>
+EOF
