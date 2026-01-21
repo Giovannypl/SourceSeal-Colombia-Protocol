@@ -1,44 +1,116 @@
-# Actualiza el dashboard para usar la URL correcta
-cat > public/index.html << 'EOF'
 <!DOCTYPE html>
 <html>
 <head>
-    <title>SourceSeal Colombia Protocol V2.0</title>
+    <title>SourceSeal Colombia V2.0 - Dashboard</title>
     <style>
-        body { font-family: Arial; background: #0a0a0a; color: white; padding: 20px; }
-        .dashboard { max-width: 800px; margin: auto; }
-        .card { background: #1a1a1a; padding: 20px; margin: 10px; border-radius: 10px; }
+        body { font-family: Arial; background: #0f0f0f; color: #00ff00; padding: 20px; }
+        .container { max-width: 1000px; margin: auto; }
+        .header { text-align: center; padding: 20px; border-bottom: 2px solid #00ff00; }
+        .card { background: #1a1a1a; padding: 20px; margin: 15px 0; border-radius: 10px; }
+        button { background: #00ff00; color: black; padding: 10px 20px; border: none; cursor: pointer; margin: 5px; }
+        pre { background: #2a2a2a; padding: 15px; border-radius: 5px; overflow: auto; }
+        .success { color: #00ff00; }
+        .error { color: #ff5555; }
     </style>
 </head>
 <body>
-    <div class="dashboard">
-        <h1>🚀 SourceSeal Colombia Protocol V2.0</h1>
-        <div class="card">
-            <h2>API Status: <span style="color: lime;">ACTIVE ✅</span></h2>
-            <p>Endpoints activos: <strong>7</strong></p>
-            <p>URL: <code>https://workspace.paredesharold62.repl.co</code></p>
+    <div class="container">
+        <div class="header">
+            <h1>🔐 SourceSeal Colombia Protocol V2.0</h1>
+            <p>Dashboard de Operaciones ZKP</p>
+            <div id="apiStatus">🔴 Conectando...</div>
         </div>
+        
         <div class="card">
-            <h3>ZKP Shards: <strong>2</strong></h3>
-            <h3>Honeytokens: <strong>5</strong></h3>
+            <h2>📊 Estado del Sistema</h2>
+            <button onclick="testAPI()">Probar Conexión</button>
+            <button onclick="getHealth()">Ver Salud</button>
+            <button onclick="getStats()">Estadísticas</button>
+            <pre id="result"></pre>
         </div>
+        
         <div class="card">
-            <h3>Legal Framework: 1978 Colombia</h3>
-            <h3>Uptime: <strong>100%</strong></h3>
+            <h2>🛡️ Crear Sello ZKP</h2>
+            <input type="text" id="docName" placeholder="Nombre del documento" style="width:300px;padding:8px;">
+            <input type="text" id="owner" placeholder="Propietario" style="width:200px;padding:8px;">
+            <button onclick="createSeal()">✨ Crear Sello</button>
+            <pre id="sealResult"></pre>
         </div>
+        
         <div class="card">
-            <h3>Endpoints Disponibles:</h3>
-            <ul>
-                <li>GET / - Información del API</li>
-                <li>GET /health - Estado del servidor</li>
-                <li>GET /seals - Listar todos los seals</li>
-                <li>POST /seals/new - Crear nuevo seal</li>
-                <li>GET /seals/:id - Obtener seal específico</li>
-                <li>POST /seals/verify/:id - Verificar seal con ZKP</li>
-                <li>GET /api/stats - Estadísticas</li>
-            </ul>
+            <h2>📋 Sellos Existentes</h2>
+            <button onclick="listSeals()">Listar Sellos</button>
+            <button onclick="clearResults()">Limpiar</button>
+            <div id="sealsCount">Cargando...</div>
+            <pre id="sealsList"></pre>
         </div>
     </div>
+    
+    <script>
+        const API_URL = window.location.hostname.includes('repl.co') 
+            ? window.location.origin 
+            : 'http://localhost:3000';
+        
+        async function testAPI() {
+            try {
+                const res = await fetch(API_URL);
+                const data = await res.json();
+                document.getElementById('apiStatus').innerHTML = '🟢 API CONECTADA';
+                document.getElementById('apiStatus').className = 'success';
+                document.getElementById('result').innerHTML = JSON.stringify(data, null, 2);
+            } catch (err) {
+                document.getElementById('apiStatus').innerHTML = '🔴 API NO DISPONIBLE';
+                document.getElementById('apiStatus').className = 'error';
+                document.getElementById('result').innerHTML = 'Error: ' + err.message;
+            }
+        }
+        
+        async function getHealth() {
+            const res = await fetch(API_URL + '/health');
+            const data = await res.json();
+            document.getElementById('result').innerHTML = JSON.stringify(data, null, 2);
+        }
+        
+        async function getStats() {
+            const res = await fetch(API_URL + '/api/stats');
+            const data = await res.json();
+            document.getElementById('result').innerHTML = JSON.stringify(data, null, 2);
+        }
+        
+        async function createSeal() {
+            const doc = document.getElementById('docName').value || 'documento.pdf';
+            const owner = document.getElementById('owner').value || 'Anónimo';
+            
+            const res = await fetch(API_URL + '/seals/new', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    document: doc,
+                    owner: owner,
+                    metadata: { type: 'ZKP_PROOF_1978', country: 'Colombia' }
+                })
+            });
+            
+            const data = await res.json();
+            document.getElementById('sealResult').innerHTML = JSON.stringify(data, null, 2);
+            listSeals();
+        }
+        
+        async function listSeals() {
+            const res = await fetch(API_URL + '/seals');
+            const data = await res.json();
+            document.getElementById('sealsCount').innerHTML = `Total: ${data.count} sellos`;
+            document.getElementById('sealsList').innerHTML = JSON.stringify(data, null, 2);
+        }
+        
+        function clearResults() {
+            document.getElementById('result').innerHTML = '';
+            document.getElementById('sealResult').innerHTML = '';
+            document.getElementById('sealsList').innerHTML = '';
+        }
+        
+        // Auto-conectar al cargar
+        testAPI();
+    </script>
 </body>
 </html>
-EOF
