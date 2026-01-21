@@ -1,4 +1,3 @@
-# Crea package.json perfecto:
 cat > package.json << 'EOF'
 {
   "name": "source-seal-colombia-protocol",
@@ -16,7 +15,3 @@ cat > package.json << 'EOF'
   }
 }
 EOF
-
-# Luego haz commit:
-git add package.json
-git commit -m "Fix JSON syntax in package.json"
