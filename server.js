@@ -1,4 +1,4 @@
-console.log("🚀 SourceSeal Colombia Protocol V2.0");
+log("🚀 SourceSeal Colombia Protocol V2.0");
 
 const express = require('express');
 const cors = require('cors');
