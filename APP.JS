@@ -1,4 +1,4 @@
-<< 'EOF'
+'EOF'
 console.log("🚀 SOURCESEAL COLOMBIA V2.0 - PRODUCTION READY");
 const http = require('http');
 
