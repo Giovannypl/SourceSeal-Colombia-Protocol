@@ -1,4 +1,4 @@
-cat > package.json << 'EOF'
+'EOF'
 {
   "name": "source-seal-colombia-protocol",
   "version": "2.0.0",
