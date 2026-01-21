@@ -2,123 +2,96 @@ const express = require('express');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware
+// Middleware para parsear JSON
 app.use(express.json());
+
+// Servir archivos estáticos si hay una carpeta 'public'
 app.use(express.static('public'));
 
-// Base de datos en memoria
-const sealsDB = [];
-
-// GET / - Información de la API
+// Endpoint raíz
 app.get('/', (req, res) => {
     res.json({
-        success: true,
-        project: "SourceSeal Colombia Protocol V2.0",
-        version: "2.0.0",
-        status: "ACTIVE",
-        timestamp: new Date().toISOString(),
-        seals_count: sealsDB.length,
-        endpoints: [
-            "GET /",
-            "GET /health",
-            "GET /seals",
-            "POST /seals/new",
-            "GET /seals/:id",
-            "POST /seals/verify/:id",
-            "GET /api/stats"
-        ],
-        public_url: "https://workspace.paredesharold62.repl.co"
+        project: 'SourceSeal Colombia Protocol V1.2',
+        version: '1.2.0',
+        description: 'Sistema de sellado digital con Zero-Knowledge Proofs',
+        author: 'Giovanny Paredes',
+        endpoints: {
+            root: '/',
+            health: '/health',
+            architecture: '/api/architecture',
+            zkp: '/api/zkp'
+        },
+        technologies: ['Node.js', 'Express', 'ZKP (circomlib + snarkjs)'],
+        legal_framework: 'Ley 1978 de 2019 (Colombia)',
+        repository: 'https://github.com/Giovannypl/SourceSeal-Colombia-Protocol'
     });
 });
 
-// GET /health - Estado del servidor
+// Health check
 app.get('/health', (req, res) => {
-    res.json({
-        status: 'healthy',
+    res.json({ 
+        status: 'OK', 
+        timestamp: new Date().toISOString(),
         uptime: process.uptime(),
-        memory: process.memoryUsage(),
-        seals_count: sealsDB.length,
-        timestamp: new Date().toISOString()
+        environment: process.env.NODE_ENV || 'development'
     });
 });
 
-// GET /seals - Listar todos los sellos
-app.get('/seals', (req, res) => {
+// Arquitectura técnica
+app.get('/api/architecture', (req, res) => {
     res.json({
-        success: true,
-        count: sealsDB.length,
-        seals: sealsDB
+        version: "1.2.0",
+        layers: {
+            presentation: "React + TypeScript + Tailwind CSS",
+            application: "Node.js + Express API",
+            domain: "Zero-Knowledge Proofs (ZKP)",
+            infrastructure: "PostgreSQL + Drizzle ORM",
+            security: "Honeytoken traps + JWT authentication"
+        },
+        zkp_flow: [
+            "1. Content hash generation (SHA-256)",
+            "2. Groth16 circuit compilation",
+            "3. Witness generation (private)",
+            "4. Proof generation (zk-SNARK)",
+            "5. Public verification (proof only)"
+        ],
+        data_privacy: "Zero-knowledge guarantees: content never exposed"
     });
 });
 
-// POST /seals/new - Crear nuevo sello ZKP
-app.post('/seals/new', (req, res) => {
-    const { document, owner, metadata } = req.body;
-    
-    const newSeal = {
-        id: `seal_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-        document: document || "unknown_document.pdf",
-        owner: owner || "anonymous",
-        metadata: metadata || { type: "ZKP_PROOF_1978", country: "Colombia" },
-        created_at: new Date().toISOString(),
-        verified: true,
-        zkp_proof: `0x${Math.random().toString(16).substr(2, 16)}`,
-        public_url: `https://workspace.paredesharold62.repl.co/seals/${Date.now()}`
-    };
-    
-    sealsDB.push(newSeal);
-    
-    res.status(201).json({
-        success: true,
-        message: "✅ Sello ZKP creado exitosamente",
-        seal: newSeal,
-        total_seals: sealsDB.length
-    });
-});
-
-// GET /api/stats - Estadísticas
-app.get('/api/stats', (req, res) => {
+// Demo ZKP
+app.get('/api/zkp', (req, res) => {
     res.json({
-        success: true,
-        stats: {
-            total_seals: sealsDB.length,
-            last_24h: sealsDB.filter(s => {
-                const sealTime = new Date(s.created_at);
-                const now = new Date();
-                return (now - sealTime) < 24 * 60 * 60 * 1000;
-            }).length,
-            verified_seals: sealsDB.filter(s => s.verified).length,
-            uptime: process.uptime()
-        }
-    });
-});
-
-// 404 para rutas no encontradas
-app.use((req, res) => {
-    res.status(404).json({
-        error: "Endpoint no encontrado",
-        available_endpoints: [
-            "GET /",
-            "GET /health",
-            "GET /seals",
-            "POST /seals/new",
-            "GET /api/stats"
+        technology: "Zero-Knowledge Proofs (ZKP)",
+        implementation: "circomlib@2.0.5 + snarkjs@0.7.6",
+        purpose: "Verify content integrity without revealing sensitive data",
+        use_case: "Digital content sealing with legal validity in Colombia",
+        features: [
+            "Privacy-first verification",
+            "Legal compliance (Law 1978)",
+            "Immutable audit trails",
+            "Honeytoken leak detection"
         ]
     });
 });
 
+// Manejo de errores 404
+app.use((req, res) => {
+    res.status(404).json({
+        error: 'Endpoint not found',
+        available_endpoints: ['/', '/health', '/api/architecture', '/api/zkp']
+    });
+});
+
 // Iniciar servidor
-app.listen(PORT, '0.0.0.0', () => {
-    console.log(`🚀 SourceSeal Colombia Protocol V2.0`);
-    console.log(`✅ Servidor en puerto: ${PORT}`);
-    console.log(`🌐 Local: http://localhost:${PORT}`);
-    console.log(`🔗 Público: https://workspace.paredesharold62.repl.co`);
-    console.log(`📅 Iniciado: ${new Date().toLocaleString()}`);
-    console.log(`\n📋 ENDPOINTS ACTIVOS:`);
-    console.log(`   • GET  /           - Info API`);
-    console.log(`   • GET  /health     - Health check`);
-    console.log(`   • GET  /seals      - Listar sellos (${sealsDB.length})`);
-    console.log(`   • POST /seals/new  - Crear sello ZKP`);
-    console.log(`   • GET  /api/stats  - Estadísticas`);
-    console.log(`\n🛡️  ¡Listo para operaciones ZKP!`);
+app.listen(PORT, () => {
+    console.log(`⚡ SourceSeal Colombia Protocol V1.2`);
+    console.log(`📡 Port: ${PORT}`);
+    console.log(`🌐 URL: https://${process.env.REPL_SLUG}.${process.env.REPL_OWNER}.repl.co`);
+    console.log(`🔧 Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`🛡️  Endpoints disponibles:`);
+    console.log(`   • / - Información del proyecto`);
+    console.log(`   • /health - Estado del servicio`);
+    console.log(`   • /api/architecture - Arquitectura técnica`);
+    console.log(`   • /api/zkp - Detalles ZKP`);
 });
