@@ -49,8 +49,6 @@ if (req.url === '/dashboard' && req.method === 'GET') {
 }
 server.listen(PORT, '0.0.0.0', () => {
     console.log(`✅ API ZKP operativa en puerto: ${PORT}`);
-    console.log(`🌐 Local: http://localhost:${PORT}`);
-    console.log(`🔗 Prueba: curl http://localhost:${PORT}`);
     console.log(`📊 Status: SourceSeal Colombia Protocol activo`);
 });
 EOF
