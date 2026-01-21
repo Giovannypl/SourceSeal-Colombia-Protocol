@@ -1,0 +1,39 @@
+html
+<!-- Crea index.html en tu Replit: -->
+cat > public/index.html << 'EOF'
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SourceSeal v2.0</title>
+    <style>
+        body { font-family: Arial; background: #0a0a0a; color: white; }
+        .dashboard { max-width: 800px; margin: auto; }
+        .card { background: #1a1a1a; padding: 20px; margin: 10px; border-radius: 10px; }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <h1>SourceSeal Colombia Protocol V2.0</h1>
+        <div class="card">
+            <h2>API Status: <span id="apiStatus">Loading...</span></h2>
+            <p>Endpoints activos: <span id="endpoints">3</span></p>
+        </div>
+        <div class="card">
+            <h3>ZKP Shards: <span id="shards">2</span></h3>
+            <h3>Honeytokens: <span id="tokens">5</span></h3>
+        </div>
+        <div class="card">
+            <h3>Legal Framework: 1978 Colombia</h3>
+            <h3>Uptime: <span id="uptime">100%</span></h3>
+        </div>
+    </div>
+    <script>
+        fetch('/')
+            .then(r => r.json())
+            .then(data => {
+                document.getElementById('apiStatus').textContent = data.status;
+            });
+    </script>
+</body>
+</html>
+EOF
