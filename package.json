@@ -1,5 +1,5 @@
 "scripts": {
-  "build": "next build"  # 对于 Next.js 项目
+  # 对于 Next.js 项目
   // 或
   "build": "react-scripts build"  # 对于 Create React App
 }
