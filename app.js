@@ -1,4 +1,4 @@
-console.log("🚀 SOURCESEAL COLOMBIA V2.0 - PRODUCTION");
+log("🚀 SOURCESEAL COLOMBIA V2.0 - PRODUCTION");
 const http = require('http');
 
 const server = http.createServer((req, res) => {
