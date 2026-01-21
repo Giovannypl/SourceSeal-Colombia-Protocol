@@ -7,6 +7,13 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middleware
+const path = require('path');
+app.use(express.static(path.join(__dirname, 'public')));  // sirve tu dashboard HTML/CSS/JS
+
+// Catch-all para SPA (reactividad del dashboard)
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 app.use(cors());
 app.use(express.json());
 
