@@ -1,26 +1,109 @@
-'EOF'
+
+## 🎨 **ACTUALIZA TU DASHBOARD PARA QUE SEA INTERACTIVO:**
+
+```bash
+# Crea un dashboard CON BOTONES REALES
+cat > public/dashboard.html << 'EOF'
 <!DOCTYPE html>
 <html>
 <head>
-    <title>SourceSeal Dashboard</title>
+    <title>SourceSeal Colombia - Dashboard Interactivo</title>
     <style>
-        body { font-family: Arial; background: black; color: lime; padding: 20px; }
-        .status { background: darkgreen; padding: 20px; border-radius: 10px; }
+        body { font-family: Arial; background: #0f0f0f; color: #00ff00; padding: 20px; }
+        .container { max-width: 800px; margin: auto; }
+        .card { background: #1a1a1a; border: 2px solid #00ff00; padding: 20px; margin: 15px 0; border-radius: 10px; }
+        button { background: #00ff00; color: black; border: none; padding: 12px 24px; margin: 5px; cursor: pointer; font-weight: bold; }
+        textarea { width: 100%; background: #2a2a2a; color: white; border: 1px solid #00ff00; padding: 10px; }
+        .result { background: #2a2a2a; padding: 15px; margin-top: 10px; border-radius: 5px; }
     </style>
 </head>
 <body>
-    <h1>🚀 SourceSeal Colombia V2.0</h1>
-    <div class="status">
-        <h2>✅ API OPERATIVA</h2>
-        <p id="data">Cargando...</p>
+    <div class="container">
+        <h1>🔐 SourceSeal Colombia Protocol V2.0</h1>
+        
+        <div class="card">
+            <h2>🚀 Estado del Sistema</h2>
+            <p>API: <span id="apiStatus">Verificando...</span></p>
+            <button onclick="testAPI()">Probar Conexión API</button>
+            <div id="apiResult" class="result"></div>
+        </div>
+        
+        <div class="card">
+            <h2>🛡️ Crear Nuevo Sello ZKP</h2>
+            <textarea id="sealData" rows="4">{"document": "contrato.pdf", "hash": "sha256_abc123", "owner": "Usuario", "type": "ZKP_PROOF"}</textarea>
+            <button onclick="createSeal()">✨ Generar Sello ZKP</button>
+            <div id="sealResult" class="result"></div>
+        </div>
+        
+        <div class="card">
+            <h2>📊 Sellos Existentes</h2>
+            <button onclick="listSeals()">📋 Listar Todos los Sellos</button>
+            <button onclick="getStats()">📈 Ver Estadísticas</button>
+            <div id="sealsResult" class="result"></div>
+        </div>
     </div>
+    
     <script>
-        fetch('https://source-seal-colombia-protocol-v-2-0-mdzimtwrt.vercel.app')
-            .then(r => r.json())
-            .then(data => {
-                document.getElementById('data').innerHTML = 
-                    JSON.stringify(data, null, 2);
-            });
+        const API_URL = window.location.hostname === 'workspace.paredesharold62.repl.co' 
+            ? 'https://workspace.paredesharold62.repl.co'
+            : 'http://localhost:5000';
+        
+        async function testAPI() {
+            try {
+                const res = await fetch(API_URL);
+                const data = await res.json();
+                document.getElementById('apiStatus').innerHTML = '✅ CONECTADO';
+                document.getElementById('apiResult').innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+            } catch (error) {
+                document.getElementById('apiStatus').innerHTML = '❌ ERROR';
+                document.getElementById('apiResult').innerHTML = 'Error: ' + error;
+            }
+        }
+        
+        async function createSeal() {
+            const data = document.getElementById('sealData').value;
+            try {
+                const res = await fetch(API_URL + '/seals/new', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: data
+                });
+                const result = await res.json();
+                document.getElementById('sealResult').innerHTML = 
+                    `<h3>✅ Sello Creado Exitosamente</h3>
+                     <pre>${JSON.stringify(result, null, 2)}</pre>`;
+            } catch (error) {
+                document.getElementById('sealResult').innerHTML = 
+                    `<h3>❌ Error</h3><p>${error}</p>`;
+            }
+        }
+        
+        async function listSeals() {
+            try {
+                const res = await fetch(API_URL + '/seals');
+                const data = await res.json();
+                document.getElementById('sealsResult').innerHTML = 
+                    `<h3>📦 ${data.count} Sellos Encontrados</h3>
+                     <pre>${JSON.stringify(data.seals, null, 2)}</pre>`;
+            } catch (error) {
+                document.getElementById('sealsResult').innerHTML = 'Error: ' + error;
+            }
+        }
+        
+        async function getStats() {
+            try {
+                const res = await fetch(API_URL + '/api/stats');
+                const data = await res.json();
+                document.getElementById('sealsResult').innerHTML = 
+                    `<h3>📊 Estadísticas del Sistema</h3>
+                     <pre>${JSON.stringify(data.stats, null, 2)}</pre>`;
+            } catch (error) {
+                document.getElementById('sealsResult').innerHTML = 'Error: ' + error;
+            }
+        }
+        
+        // Auto-test al cargar
+        testAPI();
     </script>
 </body>
 </html>
