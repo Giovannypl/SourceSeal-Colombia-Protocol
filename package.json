@@ -1,1 +1,11 @@
-"dev": "NODE_ENV=development tsx --tsconfig tsconfig.json server/index.ts"
+{
+  "scripts": {
+    "start": "NODE_ENV=production node dist/index.cjs",
+    "dev": "concurrently \"npm run server:dev\" \"npm run client:dev\"",
+    "server:dev": "NODE_ENV=development tsx server/index.ts",
+    "client:dev": "cd client && npm run dev",
+    "build": "npm run build:server && npm run build:client",
+    "build:server": "tsc",
+    "build:client": "cd client && npm run build"
+  }
+}
