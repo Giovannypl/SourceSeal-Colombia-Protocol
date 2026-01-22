@@ -1,0 +1,6 @@
+// server/index.ts
+const PORT = process.env.PORT || 3000; // 改为 3000 或其他可用端口
+
+app.listen(PORT, () => {
+  console.log(`[express] serving on port ${PORT}`);
+});
