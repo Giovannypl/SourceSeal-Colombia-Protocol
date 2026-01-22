@@ -15,5 +15,3 @@ case $choice in
   *) echo "Opción inválida" ;;
 esac
 EOF
-
-chmod +x manage.sh
