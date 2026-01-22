@@ -1,4 +1,3 @@
-# Crea un script de gestión
 cat > manage.sh << 'EOF'
 #!/bin/bash
 echo "Gestión de SourceSeal Colombia Protocol"
