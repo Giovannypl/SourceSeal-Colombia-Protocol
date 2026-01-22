@@ -1,15 +1,24 @@
+cat > tsconfig.json << 'EOF'
 {
   "compilerOptions": {
     "target": "ES2020",
     "module": "CommonJS",
+    "lib": ["ES2020"],
     "outDir": "./dist",
     "rootDir": ".",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
     "baseUrl": ".",
     "paths": {
       "@shared/*": ["./shared/*"]
     }
-  }
+  },
+  "include": ["server/**/*", "shared/**/*", "client/**/*"],
+  "exclude": ["node_modules", "dist"]
 }
+EOF
