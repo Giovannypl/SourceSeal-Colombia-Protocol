@@ -1,21 +1,23 @@
-// 路径：/server/package.json
+cat > package.json << 'EOF'
 {
-  "name": "source-seal-backend",
+  "name": "source-seal-colombia",
   "version": "1.0.0",
-  "private": true,
+  "description": "Protocolo SourceSeal Colombia",
+  "main": "server.js",
   "scripts": {
-    "dev": "NODE_ENV=development tsx index.ts",
-    "build": "tsc", // 只编译TypeScript
-    "start": "NODE_ENV=production node dist/index.cjs"
+    "start": "node server.js",
+    "dev": "nodemon server.js"
   },
   "dependencies": {
-    // 这里只放后端需要的依赖
-    "express": "^4.18.0",
-    // ... 其他后端依赖
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1"
   },
   "devDependencies": {
-    "typescript": "^5.6.3",
-    "tsx": "^4.20.5"
-    // ... 其他后端开发依赖
+    "nodemon": "^3.0.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
+EOF
