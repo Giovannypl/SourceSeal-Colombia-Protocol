@@ -654,5 +654,3 @@ app.post('/seal', (req, res) => {
   
   // Generar un ID único para el sello
   const sealId = 'SEAL-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9).toUpperCase();
-  
-  // Simulación de creación de
