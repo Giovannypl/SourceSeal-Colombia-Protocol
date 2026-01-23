@@ -1,25 +1,31 @@
 cat > start.sh << 'EOF'
 #!/bin/bash
-
-echo "🔄 LIMPIANDO PROCESOS ANTERIORES..."
-# Mata TODOS los procesos que puedan interferir
-pkill -9 node 2>/dev/null || true
-pkill -9 nodemon 2>/dev/null || true
-pkill -9 npm 2>/dev/null || true
-pkill -9 server 2>/dev/null || true
-pkill -f "server.js" 2>/dev/null || true
-
-echo "⏳ ESPERANDO 3 SEGUNDOS..."
-sleep 3
-
+echo "========================================="
 echo "🚀 INICIANDO SOURCE SEAL COLOMBIA..."
-echo "🔍 Buscando puerto disponible..."
+echo "========================================="
 
-# Usa un puerto dinámico
-export PORT=0  # Esto hará que Express use un puerto aleatorio disponible
+# Mata procesos anteriores (silenciosamente)
+pkill -f node 2>/dev/null || true
+pkill -f nodemon 2>/dev/null || true
+sleep 2
+
+# Usa un puerto diferente si 3000 está ocupado
+PORT=3000
+if ss -tuln | grep :$PORT > /dev/null; then
+  PORT=4000
+fi
+if ss -tuln | grep :$PORT > /dev/null; then
+  PORT=5000
+fi
+if ss -tuln | grep :$PORT > /dev/null; then
+  PORT=8080
+fi
+
+echo "✅ Usando puerto: $PORT"
+export PORT=$PORT
 
 # Inicia el servidor
-npm run dev
+node server.js
 EOF
 
 chmod +x start.sh
