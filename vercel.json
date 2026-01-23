@@ -1,15 +1,16 @@
+// 路径：/server/vercel.json
 {
   "version": 2,
   "builds": [
-    // 如果你有需要构建的前端（如client目录），指定构建命令和输出目录
-    { "src": "client/package.json", "use": "@vercel/static-build", "config": { "distDir": "dist" } },
-    // 将API请求定向到你的Express服务器
-    { "src": "server/index.ts", "use": "@vercel/node" }
+    {
+      "src": "index.ts", // 你的入口文件
+      "use": "@vercel/node"
+    }
   ],
   "routes": [
-    // 优先处理API请求
-    { "src": "/api/(.*)", "dest": "/server/index.ts" },
-    // 其他所有请求指向构建好的前端
-    { "src": "/(.*)", "dest": "/client" }
+    {
+      "src": "/(.*)",
+      "dest": "index.ts"
+    }
   ]
 }
