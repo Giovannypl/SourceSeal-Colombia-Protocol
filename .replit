@@ -1,10 +1,11 @@
+cat > .replit << 'EOF'
 language = "nodejs"
-run = "npm start"
+run = "npm run dev"
 
-[[ports]]
-localPort = 5000
-externalPort = 80
+[env]
+PORT = "3000"
+NODE_ENV = "development"
 
-[[ports]]
-localPort = 5000
-externalPort = 443
+[features]
+search = true
+EOF
