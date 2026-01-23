@@ -1,11 +1,21 @@
+// 路径：/server/package.json
 {
+  "name": "source-seal-backend",
+  "version": "1.0.0",
+  "private": true,
   "scripts": {
-    "start": "NODE_ENV=production node dist/index.cjs",
-    "dev": "concurrently \"npm run server:dev\" \"npm run client:dev\"",
-    "server:dev": "NODE_ENV=development tsx server/index.ts",
-    "client:dev": "cd client && npm run dev",
-    "build": "npm run build:server && npm run build:client",
-    "build:server": "tsc",
-    "build:client": "cd client && npm run build"
+    "dev": "NODE_ENV=development tsx index.ts",
+    "build": "tsc", // 只编译TypeScript
+    "start": "NODE_ENV=production node dist/index.cjs"
+  },
+  "dependencies": {
+    // 这里只放后端需要的依赖
+    "express": "^4.18.0",
+    // ... 其他后端依赖
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3",
+    "tsx": "^4.20.5"
+    // ... 其他后端开发依赖
   }
 }
