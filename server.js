@@ -1,4 +1,4 @@
-pkill -f node 2>/dev/null; sleep 2; rm -f server.js; cat > server.js << 'EOF'
+cat > server.js << 'EOF'
 const express = require('express');
 const app = express();
 const PORT = process.env.PORT || 3000;
