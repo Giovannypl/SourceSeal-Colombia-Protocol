@@ -13,7 +13,7 @@ export const api = {
 export const buildUrl = (endpoint: string) => {
   const baseUrl = process.env.NODE_ENV === 'production' 
     ? window.location.origin 
-    : 'http://localhost:5000';
+    : 'http://localhost:3001';
   return `${baseUrl}${endpoint}`;
 };
 EOF
