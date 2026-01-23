@@ -1,4 +1,4 @@
-<< 'EOF'
+cat > server.js << 'EOF'
 const express = require('express');
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -634,23 +634,4 @@ app.get('/', (req, res) => {
 // Ruta de salud
 app.get('/health', (req, res) => {
   res.json({
-    status: 'healthy',
-    service: 'SourceSeal Colombia Protocol',
-    version: '2.0.0',
-    port: PORT,
-    timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV || 'production',
-    system: {
-      node: process.version,
-      platform: process.platform,
-      uptime: process.uptime()
-    }
-  });
-});
-
-// Ruta para crear sellos ZKP
-app.post('/seal', (req, res) => {
-  const { data } = req.body;
-  
-  // Generar un ID único para el sello
-  const sealId = 'SEAL-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+    status: '
