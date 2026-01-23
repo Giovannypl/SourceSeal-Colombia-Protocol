@@ -1,19 +1,17 @@
-// vite.config.ts
-import { defineConfig } from 'vite'
-import path from 'path'
+import { defineConfig } from 'vite';
 
 export default defineConfig({
-  resolve: {
-    alias: {
-      '@': path.resolve(__dirname, './src'),
-    },
-  },
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:3001', // 后端地址
+        target: 'http://localhost:5000',  // backend local
         changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, '')
       },
-    },
-  },
-})
+      '/seals': {
+        target: 'http://localhost:5000',
+        changeOrigin: true
+      }
+    }
+  }
+});
