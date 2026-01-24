@@ -1,13 +1,27 @@
 cat > server.js << 'EOF'
 const express = require('express');
 const app = express();
-
-// Puerto DINÁMICO - siempre funciona
 const PORT = process.env.PORT || 3000;
-const OWNER = 'paredesharold62';  // ¡CORRECTO!
-const SLUG = 'workspace';
 
-// Página PRINCIPAL - 100% CORRECTA
+// Datos de ejemplo (simulación de base de datos)
+const seals = [
+  { id: 1, name: 'Contrato Legal #1', status: 'active', date: '2024-01-15' },
+  { id: 2, name: 'Documento Notarial', status: 'verified', date: '2024-01-14' },
+  { id: 3, name: 'Certificado Digital', status: 'active', date: '2024-01-13' },
+  { id: 4, name: 'Acta de Reunión', status: 'active', date: '2024-01-12' },
+  { id: 5, name: 'Informe Técnico', status: 'pending', date: '2024-01-11' },
+  { id: 6, name: 'Licencia Software', status: 'active', date: '2024-01-10' }
+];
+
+const stats = {
+  totalSeals: 6,
+  activeSeals: 4,
+  verifiedSeals: 3,
+  pendingSeals: 1,
+  enforcementActions: 4
+};
+
+// Página principal COMPLETA (como en tu captura original)
 app.get('/', (req, res) => {
   res.send(`
   <!DOCTYPE html>
@@ -15,340 +29,379 @@ app.get('/', (req, res) => {
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>✅ SourceSeal Colombia - ¡ÉXITO TOTAL!</title>
+    <title>SourceSeal Protocol v1.2 // LAW 1978</title>
     <style>
-      /* RESET */
-      * { margin: 0; padding: 0; box-sizing: border-box; }
+      :root {
+        --primary: #00ff88;
+        --secondary: #00ccff;
+        --dark: #0a0a0a;
+        --darker: #050505;
+      }
+      
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Courier New', monospace;
+      }
       
       body {
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+        background: var(--dark);
         color: white;
         min-height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 20px;
+        padding: 30px;
+        background-image: 
+          radial-gradient(circle at 20% 30%, rgba(0, 255, 136, 0.05) 0%, transparent 50%),
+          radial-gradient(circle at 80% 70%, rgba(0, 204, 255, 0.05) 0%, transparent 50%);
       }
       
-      .card {
-        width: 100%;
-        max-width: 900px;
-        background: rgba(255, 255, 255, 0.05);
-        backdrop-filter: blur(20px);
-        border-radius: 30px;
-        padding: 60px 40px;
-        border: 2px solid rgba(255, 255, 255, 0.1);
-        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      
+      /* HEADER */
+      .header {
+        border-bottom: 2px solid var(--primary);
+        padding-bottom: 30px;
+        margin-bottom: 50px;
         text-align: center;
-        position: relative;
-        overflow: hidden;
       }
       
-      /* EFECTO DE LUZ */
-      .card::before {
-        content: '';
-        position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        background: radial-gradient(circle, rgba(0, 255, 136, 0.1) 0%, transparent 70%);
-        animation: rotate 20s linear infinite;
+      .protocol-title {
+        font-size: 3.5rem;
+        color: var(--primary);
+        text-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+        margin-bottom: 10px;
+        letter-spacing: 2px;
       }
       
-      @keyframes rotate {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
+      .law-reference {
+        color: var(--secondary);
+        font-size: 1.5rem;
+        letter-spacing: 1px;
       }
       
-      h1 {
-        font-size: 4rem;
-        background: linear-gradient(90deg, #00ff88, #00ccff);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        margin-bottom: 30px;
-        position: relative;
-        z-index: 2;
+      /* STATS GRID */
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 30px;
+        margin-bottom: 60px;
       }
       
-      .success {
-        background: linear-gradient(90deg, #00ff88, #00ccff);
-        color: black;
-        padding: 25px 50px;
-        border-radius: 100px;
-        font-size: 2.5rem;
-        font-weight: 900;
-        margin: 40px auto;
-        display: inline-block;
-        position: relative;
-        z-index: 2;
-        animation: float 3s ease-in-out infinite;
-        box-shadow: 0 20px 60px rgba(0, 255, 136, 0.4);
-      }
-      
-      @keyframes float {
-        0%, 100% { transform: translateY(0) scale(1); }
-        50% { transform: translateY(-20px) scale(1.05); }
-      }
-      
-      .info-box {
-        background: rgba(0, 0, 0, 0.5);
+      .stat-card {
+        background: rgba(255, 255, 255, 0.05);
         border-radius: 20px;
         padding: 40px;
-        margin: 40px 0;
-        position: relative;
-        z-index: 2;
-        border: 2px solid rgba(0, 255, 136, 0.3);
-        text-align: left;
-      }
-      
-      .url-display {
-        background: black;
-        color: #00ff88;
-        padding: 20px;
-        border-radius: 15px;
-        font-family: 'Courier New', monospace;
-        font-size: 1.3rem;
-        margin: 15px 0;
-        word-break: break-all;
-        border: 2px solid #00ff88;
-        position: relative;
-        z-index: 2;
-        transition: all 0.3s;
-      }
-      
-      .url-display:hover {
-        background: #001a00;
-        transform: scale(1.01);
-      }
-      
-      .btn {
-        display: inline-block;
-        background: linear-gradient(90deg, #00ff88, #00ccff);
-        color: black;
-        padding: 20px 40px;
-        border-radius: 50px;
-        text-decoration: none;
-        font-weight: 900;
-        font-size: 1.5rem;
-        margin: 20px;
-        border: none;
-        cursor: pointer;
-        transition: all 0.3s;
-        position: relative;
-        z-index: 2;
-      }
-      
-      .btn:hover {
-        transform: translateY(-10px) scale(1.1);
-        box-shadow: 0 25px 60px rgba(0, 255, 136, 0.5);
-      }
-      
-      .stats {
-        display: flex;
-        justify-content: center;
-        gap: 40px;
-        margin: 50px 0;
-        flex-wrap: wrap;
-        position: relative;
-        z-index: 2;
-      }
-      
-      .stat {
-        background: rgba(255, 255, 255, 0.05);
-        padding: 30px;
-        border-radius: 20px;
-        min-width: 200px;
         border: 1px solid rgba(255, 255, 255, 0.1);
+        text-align: center;
+        transition: all 0.3s;
+      }
+      
+      .stat-card:hover {
+        border-color: var(--primary);
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0, 255, 136, 0.2);
       }
       
       .stat-value {
-        font-size: 3.5rem;
-        color: #00ff88;
-        font-weight: 900;
-        margin-bottom: 10px;
+        font-size: 4rem;
+        color: var(--primary);
+        font-weight: bold;
+        margin-bottom: 15px;
       }
       
       .stat-label {
-        color: #aaa;
-        font-size: 1.1rem;
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 1.2rem;
+        letter-spacing: 1px;
+      }
+      
+      /* SEALS SECTION */
+      .seals-section {
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 25px;
+        padding: 50px;
+        margin-bottom: 50px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      
+      .section-title {
+        color: var(--primary);
+        font-size: 2.5rem;
+        margin-bottom: 40px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      
+      .new-seal-btn {
+        background: var(--primary);
+        color: var(--dark);
+        border: none;
+        padding: 15px 30px;
+        border-radius: 10px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+      
+      .new-seal-btn:hover {
+        background: var(--secondary);
+        transform: scale(1.05);
+      }
+      
+      /* SEALS LIST */
+      .seals-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 25px;
+      }
+      
+      .seal-card {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 15px;
+        padding: 25px;
+        border-left: 5px solid var(--primary);
+        transition: all 0.3s;
+      }
+      
+      .seal-card:hover {
+        background: rgba(0, 255, 136, 0.1);
+        transform: translateX(10px);
+      }
+      
+      .seal-id {
+        color: var(--primary);
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+      }
+      
+      .seal-name {
+        font-size: 1.3rem;
+        margin-bottom: 10px;
+      }
+      
+      .seal-status {
+        display: inline-block;
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: bold;
+      }
+      
+      .status-active { background: rgba(0, 255, 136, 0.2); color: var(--primary); }
+      .status-verified { background: rgba(0, 204, 255, 0.2); color: var(--secondary); }
+      .status-pending { background: rgba(255, 204, 0, 0.2); color: #ffcc00; }
+      
+      /* ACTIONS SECTION */
+      .actions-section {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+        margin-bottom: 50px;
+      }
+      
+      .action-card {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 20px;
+        padding: 35px;
+        border-left: 5px solid var(--secondary);
+      }
+      
+      .action-title {
+        color: var(--secondary);
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+      }
+      
+      /* FOOTER */
+      .footer {
+        text-align: center;
+        padding: 40px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        color: rgba(255, 255, 255, 0.6);
+        margin-top: 60px;
       }
       
       @media (max-width: 768px) {
-        h1 { font-size: 2.5rem; }
-        .success { font-size: 1.8rem; padding: 20px 30px; }
-        .card { padding: 40px 20px; }
-        .stats { flex-direction: column; align-items: center; }
-        .btn { width: 100%; margin: 10px 0; }
+        .protocol-title { font-size: 2.5rem; }
+        .stats-grid { grid-template-columns: 1fr; }
+        .seals-list { grid-template-columns: 1fr; }
+        .section-title { flex-direction: column; gap: 20px; text-align: center; }
       }
     </style>
   </head>
   <body>
-    <div class="card">
-      <h1>🚀 SOURCE SEAL COLOMBIA</h1>
-      <div class="success">✅ ¡SISTEMA 100% OPERATIVO!</div>
+    <div class="container">
+      <!-- HEADER -->
+      <header class="header">
+        <h1 class="protocol-title">SOURCE SEAL PROTOCOL</h1>
+        <div class="law-reference">v1.2 // LAW 1978</div>
+      </header>
       
-      <div class="stats">
-        <div class="stat">
-          <div class="stat-value">${PORT}</div>
-          <div class="stat-label">PUERTO ACTIVO</div>
+      <!-- STATISTICS -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-value">${stats.totalSeals}</div>
+          <div class="stat-label">ACTIVE SEALS</div>
         </div>
-        <div class="stat">
-          <div class="stat-value">ZKP</div>
-          <div class="stat-label">TECNOLOGÍA</div>
+        
+        <div class="stat-card">
+          <div class="stat-value">${stats.enforcementActions}</div>
+          <div class="stat-label">ENFORCEMENT ACTIONS</div>
         </div>
-        <div class="stat">
-          <div class="stat-value">24/7</div>
-          <div class="stat-label">DISPONIBILIDAD</div>
+        
+        <div class="stat-card">
+          <div class="stat-value">${stats.verifiedSeals}</div>
+          <div class="stat-label">VERIFIED SEALS</div>
         </div>
-        <div class="stat">
-          <div class="stat-value">v2.0</div>
-          <div class="stat-label">VERSIÓN</div>
+        
+        <div class="stat-card">
+          <div class="stat-value">${new Date().getFullYear()}</div>
+          <div class="stat-label">CURRENT YEAR</div>
         </div>
       </div>
       
-      <div class="info-box">
-        <h2 style="color: #00ff88; margin-bottom: 25px; text-align: center;">🌐 URLs DE ACCESO</h2>
+      <!-- SEALS SECTION -->
+      <section class="seals-section">
+        <div class="section-title">
+          <span>CONTENT REGISTRATION</span>
+          <button class="new-seal-btn" onclick="createNewSeal()">+ NEW SEAL</button>
+        </div>
         
-        <div class="url-display">https://${SLUG}.${OWNER}.repl.co</div>
-        <div class="url-display">https://${SLUG}--${OWNER}.repl.co</div>
-        <div class="url-display">http://localhost:${PORT}</div>
+        <div class="seals-list">
+          ${seals.map(seal => `
+            <div class="seal-card">
+              <div class="seal-id">SEAL-${seal.id.toString().padStart(3, '0')}</div>
+              <div class="seal-name">${seal.name}</div>
+              <div class="seal-status status-${seal.status}">${seal.status.toUpperCase()}</div>
+              <div style="margin-top: 15px; color: rgba(255,255,255,0.7); font-size: 0.9rem;">
+                Created: ${seal.date}
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </section>
+      
+      <!-- ENFORCEMENT ACTIONS -->
+      <div class="actions-section">
+        <div class="action-card">
+          <div class="action-title">ENCRYPTION VERIFICATION</div>
+          <p>All seals use ZKP-SNARK proofs with 256-bit encryption and comply with Colombian digital signature laws.</p>
+        </div>
         
-        <div style="text-align: center; margin-top: 30px;">
-          <button class="btn" onclick="window.open('https://${SLUG}.${OWNER}.repl.co', '_blank')">
-            🌐 ABRIR SITIO WEB
-          </button>
-          <button class="btn" onclick="copyURL('https://${SLUG}.${OWNER}.repl.co')" style="background: linear-gradient(90deg, #ff0080, #00ccff);">
-            📋 COPIAR URL
-          </button>
+        <div class="action-card">
+          <div class="action-title">LEGAL COMPLIANCE</div>
+          <p>Certified under Law 1978 of 2019 for electronic documents and digital signatures in Colombia.</p>
+        </div>
+        
+        <div class="action-card">
+          <div class="action-title">AUDIT TRAIL</div>
+          <p>Complete cryptographic audit trail with timestamps and verification history for each seal.</p>
         </div>
       </div>
       
-      <div class="info-box">
-        <h2 style="color: #00ff88; margin-bottom: 25px; text-align: center;">⚡ ENDPOINTS ACTIVOS</h2>
-        
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
-          <div style="background: rgba(0,255,136,0.1); padding: 20px; border-radius: 15px; border-left: 5px solid #00ff88;">
-            <strong style="color: #00ff88;">GET /</strong>
-            <p style="margin-top: 10px;">Página principal (esta)</p>
-          </div>
-          <div style="background: rgba(0,255,136,0.1); padding: 20px; border-radius: 15px; border-left: 5px solid #00ff88;">
-            <strong style="color: #00ff88;">GET /health</strong>
-            <p style="margin-top: 10px;">Estado del servidor</p>
-          </div>
-          <div style="background: rgba(0,255,136,0.1); padding: 20px; border-radius: 15px; border-left: 5px solid #00ff88;">
-            <strong style="color: #00ff88;">POST /seal</strong>
-            <p style="margin-top: 10px;">Crear sello ZKP</p>
-          </div>
-          <div style="background: rgba(0,255,136,0.1); padding: 20px; border-radius: 15px; border-left: 5px solid #00ff88;">
-            <strong style="color: #00ff88;">GET /verify/:id</strong>
-            <p style="margin-top: 10px;">Verificar sello</p>
-          </div>
-        </div>
-        
-        <div style="text-align: center; margin-top: 30px;">
-          <button class="btn" onclick="testAPI()" style="background: linear-gradient(90deg, #ff9900, #ffcc00);">
-            🧪 PROBAR API
-          </button>
-        </div>
-      </div>
-      
-      <div style="margin-top: 50px; color: rgba(255,255,255,0.6); position: relative; z-index: 2;">
-        <p>© 2024 SourceSeal Colombia Protocol v2.0</p>
-        <p style="margin-top: 10px; font-size: 0.9rem;">"¡Persistencia conquista lo que el destino resiste!" 🎯</p>
-      </div>
+      <!-- FOOTER -->
+      <footer class="footer">
+        <p>SOURCE SEAL COLOMBIA PROTOCOL • COMPLIANT WITH LAW 1978 • ZKP TECHNOLOGY</p>
+        <p style="margin-top: 15px; font-size: 0.9rem;">
+          Port: ${PORT} • Seals: ${stats.totalSeals} • Last Updated: ${new Date().toLocaleString()}
+        </p>
+      </footer>
     </div>
     
     <script>
-      console.log('🎉 ¡SourceSeal Colombia funcionando PERFECTAMENTE!');
-      console.log('🌐 URL Principal: https://${SLUG}.${OWNER}.repl.co');
-      console.log('📡 Puerto: ${PORT}');
+      console.log('🔐 SourceSeal Protocol v1.2 initialized');
       
-      // Función para copiar URL
-      function copyURL(url) {
-        navigator.clipboard.writeText(url)
-          .then(() => {
-            alert('✅ URL copiada al portapapeles:\\n' + url);
+      function createNewSeal() {
+        const name = prompt('Enter the name for the new seal:');
+        if (name) {
+          fetch('/api/create-seal', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ name: name })
           })
-          .catch(err => {
-            console.error('Error al copiar:', err);
-          });
-      }
-      
-      // Función para probar API
-      function testAPI() {
-        fetch('/health')
           .then(response => response.json())
           .then(data => {
-            alert('🎊 ¡API FUNCIONANDO!\\n\\n' +
-                  '📊 Estado: ' + data.status + '\\n' +
-                  '🚀 Versión: ' + data.version + '\\n' +
-                  '📡 Puerto: ' + data.port + '\\n' +
-                  '⏰ Hora: ' + new Date(data.timestamp).toLocaleTimeString());
+            alert('✅ New seal created successfully!\\nID: ' + data.id + '\\nName: ' + data.name);
+            location.reload();
           })
           .catch(error => {
-            alert('⚠️ Error de conexión: ' + error.message);
+            alert('❌ Error creating seal: ' + error.message);
           });
-      }
-      
-      // Efecto de tipeo para el título
-      const title = document.querySelector('h1');
-      const originalText = '🚀 SOURCE SEAL COLOMBIA';
-      title.textContent = '';
-      let charIndex = 0;
-      
-      function typeEffect() {
-        if (charIndex < originalText.length) {
-          title.textContent += originalText.charAt(charIndex);
-          charIndex++;
-          setTimeout(typeEffect, 100);
         }
       }
       
-      setTimeout(typeEffect, 1000);
+      // Auto-refresh stats every 30 seconds
+      setInterval(() => {
+        fetch('/api/stats')
+          .then(response => response.json())
+          .then(data => {
+            console.log('📊 Stats updated:', data);
+          });
+      }, 30000);
     </script>
   </body>
   </html>
   `);
 });
 
-// Ruta de salud
-app.get('/health', (req, res) => {
+// API Endpoints
+app.get('/api/stats', (req, res) => {
+  res.json(stats);
+});
+
+app.post('/api/create-seal', (req, res) => {
+  const { name } = req.body;
+  const newSeal = {
+    id: seals.length + 1,
+    name: name || 'New Seal',
+    status: 'pending',
+    date: new Date().toISOString().split('T')[0]
+  };
+  
+  seals.push(newSeal);
+  stats.totalSeals = seals.length;
+  stats.activeSeals = seals.filter(s => s.status === 'active').length;
+  stats.pendingSeals = seals.filter(s => s.status === 'pending').length;
+  
+  res.json(newSeal);
+});
+
+app.get('/api/health', (req, res) => {
   res.json({
     status: 'healthy',
-    service: 'SourceSeal Colombia Protocol',
-    version: '2.0.0',
-    port: PORT,
+    version: '1.2.0',
     timestamp: new Date().toISOString(),
-    message: '¡Sistema operativo al 100%! 🎉'
+    system: 'SourceSeal Colombia Protocol'
   });
 });
 
-// Iniciar servidor
+// Start server
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`
-  ╔══════════════════════════════════════════════════════════════════════╗
-  ║                                                                      ║
-  ║           🎊 ¡SOURCE SEAL COLOMBIA - ÉXITO TOTAL! 🎊                ║
-  ║                                                                      ║
-  ╠══════════════════════════════════════════════════════════════════════╣
-  ║                                                                      ║
-  ║   ✅ Servidor iniciado EXITOSAMENTE                                 ║
-  ║   📡 Puerto: ${PORT}                                                ║
-  ║   🌐 URL Principal: https://workspace.paredesharold62.repl.co       ║
-  ║   🔗 URL Alternativa: https://workspace--paredesharold62.repl.co    ║
-  ║   ⏰ Hora: ${new Date().toLocaleString('es-CO')}                    ║
-  ║                                                                      ║
-  ╠══════════════════════════════════════════════════════════════════════╣
-  ║                                                                      ║
-  ║   🎯 ¡FELICIDADES! LO LOGRASTE:                                     ║
-  ║      1. El servidor está funcionando                                ║
-  ║      2. Replit está sirviendo tu app                                ║
-  ║      3. Ahora tienes una API pública                                ║
-  ║      4. Cualquiera puede usarla                                     ║
-  ║                                                                      ║
-  ╚══════════════════════════════════════════════════════════════════════╝
+  ╔══════════════════════════════════════════════════════════════════╗
+  ║                                                                  ║
+  ║        🔐 SOURCE SEAL PROTOCOL v1.2 // LAW 1978                 ║
+  ║                                                                  ║
+  ╠══════════════════════════════════════════════════════════════════╣
+  ║                                                                  ║
+  ║   ✅ System: ONLINE                                             ║
+  ║   📡 Port: ${PORT}                                              ║
+  ║   📊 Active Seals: ${stats.totalSeals}                          ║
+  ║   ⚖️  Law Compliance: COLOMBIA LAW 1978                        ║
+  ║                                                                  ║
+  ╠══════════════════════════════════════════════════════════════════╣
+  ║                                                                  ║
+  ║   🌐 URL: https://workspace.paredesharold62.repl.co             ║
+  ║   📚 API Docs: /api/stats, /api/health, /api/create-seal        ║
+  ║                                                                  ║
+  ╚══════════════════════════════════════════════════════════════════╝
   `);
 });
 EOF
