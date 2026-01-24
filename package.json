@@ -1,15 +1,16 @@
 {
   "name": "source-seal-colombia-protocol",
   "version": "1.0.0",
-  "description": "Servidor principal",
-  "main": "server/index.ts",
-  "type": "module",
+  "description": "Servidor Express en JS",
+  "main": "server.js",
   "scripts": {
-    "start": "tsx server/index.ts",
-    "dev": "tsx server/index.ts"
+    "start": "node server.js",
+    "dev": "node server.js"
   },
-  "devDependencies": {
-    "tsx": "^4.21.0",
-    "typescript": "^5.3.3"
+  "dependencies": {
+    "express": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=12.0.0"
   }
 }
