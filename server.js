@@ -1,10 +1,8 @@
-cat > server.js << 'EOF'
-// SERVIDOR 100% FUNCIONAL - NO FALLA
 const express = require('express');
 const app = express();
 
 // Configuración SEGURA para Replit
-const PORT = process.env.PORT || 8080; // Usa 8080 en lugar de 3000
+const port = process.env.PORT || 8080; // Usa 8080 en lugar de 3000
 const HOST = '0.0.0.0';
 
 // Página principal - HTML COMPLETO y BONITO
