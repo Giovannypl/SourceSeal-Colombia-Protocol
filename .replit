@@ -1,11 +1,11 @@
 cat > .replit << 'EOF'
 language = "nodejs"
-run = "node server.js"
+run = "cd source-seal-completo && npm start"
 
 [env]
 PORT = "3000"
 NODE_ENV = "production"
 
 [deployment]
-run = ["node", "server.js"]
+run = ["cd", "source-seal-completo", "&&", "npm", "start"]
 EOF
